@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
+import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
 @RestController
 public class RockPaperScissorsController {
@@ -35,17 +36,17 @@ public class RockPaperScissorsController {
 
     @RequestMapping(value = "/check/{playerid}", method = RequestMethod.GET, produces = "application/json")
     public Response checkGame(@PathVariable("playerid") Long playerId) {
-        return null;
+        throw new NotImplementedException();
     }
 
     @RequestMapping(value = "/ready/{playerid}", method = RequestMethod.GET, produces = "application/json")
     public Response ready(@PathVariable("playerid") long playerid) {
-        return null;
+        throw new NotImplementedException();
     }
 
     @RequestMapping(value = "/actionType/{playerid}/{actionType}", method = RequestMethod.GET, produces = "application/json")
     public Response play(@PathVariable("playerid") long playerId, @PathVariable("actionType") ActionType actionType) {
-        return null;
+        throw new NotImplementedException();
     }
 
 }
