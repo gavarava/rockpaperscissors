@@ -3,11 +3,13 @@ package com.rps.application;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.fail;
 
 import com.rps.application.players.PlayerCreationDetails;
 import com.rps.application.players.PlayerService;
 import com.rps.domain.PlayersInMemoryRepository;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 
 public class PlayerServiceTest {
@@ -34,5 +36,18 @@ public class PlayerServiceTest {
         assertThat(playerCreationDetails.getCreationInfo(), is("Player with name SomePlayer already exists"));
     }
 
+    @Ignore(value = "TODO")
+    public void shouldDeletePlayerWhenRequested() {
+        fail();
+    }
+
+    @Ignore(value = "TODO")
+    @Test(expected = IllegalStateException.class)
+    public void shouldThrowExceptionWhenDeletingAPlayerInTheMiddleOfAGame() {
+        // Given a player that is in the middle of a game
+        // When trying to delete a player
+        //It should throw IllegalStateException
+
+    }
 
 }

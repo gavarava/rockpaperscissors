@@ -1,18 +1,21 @@
 package com.rps.domain.actors;
 
-import static com.rps.domain.actors.Player.State.WAITING;
 
 public class Player {
 
     private long id;
     private String name;
-    private State state = WAITING;
+    private State state;
     private int numberOfWins;
     private int numberOfLosses;
 
     public Player(String name) {
-        this.id = System.currentTimeMillis();
+        if (name == null) {
+            throw new IllegalArgumentException("name of the Player cannot be null");
+        }
         this.name = name;
+        this.id = System.currentTimeMillis();
+        this.state = State.WAITING;
     }
 
     public long getId() {
@@ -41,6 +44,10 @@ public class Player {
 
     public void changeStateTo(State state) {
         this.state = state;
+    }
+
+    public State currentState() {
+        return this.state;
     }
 
     public enum State {

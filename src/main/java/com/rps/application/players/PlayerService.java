@@ -21,10 +21,10 @@ public class PlayerService {
         if (existingPlayer != null) {
             return new PlayerCreationDetails(null, "Player with name " + name + " already exists");
         }
-        return createNewPlayerWith(name);
+        return createNewPlayerAs(name);
     }
 
-    private PlayerCreationDetails createNewPlayerWith(String name) {
+    private PlayerCreationDetails createNewPlayerAs(String name) {
         try {
             Player player = new Player(name);
             playersInMemoryRepository.save(player);
