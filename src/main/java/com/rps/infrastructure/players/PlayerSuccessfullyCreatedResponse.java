@@ -2,7 +2,7 @@ package com.rps.infrastructure.players;
 
 import com.rps.domain.actors.Player;
 
-public class PlayerSuccessfullyCreatedResponse implements PlayerCreationResponse {
+public class PlayerSuccessfullyCreatedResponse implements PlayerResponse {
 
     private String responseMessage;
     private Player player;

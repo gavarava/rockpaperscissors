@@ -1,6 +1,6 @@
 package com.rps.infrastructure.players;
 
-public class NoPlayerCreatedResponse implements PlayerCreationResponse {
+public class NoPlayerCreatedResponse implements PlayerResponse {
 
     private String message;
 

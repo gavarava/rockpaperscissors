@@ -50,10 +50,12 @@ dependencies {
             'org.springframework.boot:spring-boot-starter-web',
             'org.springframework.boot:spring-boot-starter-actuator',
             'org.springframework.data:spring-data-jpa',
-            'org.springframework.boot:spring-boot-devtools'
+            'org.springframework.boot:spring-boot-devtools',
+            'org.hamcrest:java-hamcrest:2.0.0.0'
     )
     testCompile(
             'junit:junit:4.12',
-            'org.springframework.boot:spring-boot-starter-test'
+            'org.springframework.boot:spring-boot-starter-test',
+            'org.hamcrest:hamcrest-all:1.3'
     )
 }

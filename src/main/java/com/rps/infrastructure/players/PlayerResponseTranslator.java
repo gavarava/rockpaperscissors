@@ -12,7 +12,7 @@ public class PlayerResponseTranslator {
     private PlayerResponseTranslator() {
     }
 
-    public static PlayerCreationResponse translate(PlayerCreationDetails playerCreationDetails) {
+    public static PlayerResponse translate(PlayerCreationDetails playerCreationDetails) {
         if (playerCreationDetails.getPlayer() == null) {
             return new NoPlayerCreatedResponse(playerCreationDetails.getCreationInfo());
         }
