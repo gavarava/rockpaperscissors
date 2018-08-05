@@ -1,9 +1,8 @@
 package com.rps.infrastructure;
 
-import com.rps.application.players.PlayerCreationDetails;
+import com.rps.application.players.PlayerDetails;
 import com.rps.application.players.PlayerService;
 import com.rps.domain.gameplay.ActionType;
-import com.rps.infrastructure.players.GetPlayerResponse;
 import com.rps.infrastructure.players.PlayerResponse;
 import com.rps.infrastructure.players.PlayerResponseTranslator;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,13 +30,14 @@ public class RockPaperScissorsController {
 
     @RequestMapping(value = "/register/{nickname}", method = RequestMethod.POST, produces = "application/json")
     public ResponseEntity<PlayerResponse> registerPlayer(@PathVariable("nickname") String nickname) {
-        PlayerCreationDetails playerCreationDetails = playerService.createPlayerWithName(nickname);
-        return ResponseEntity.ok(PlayerResponseTranslator.translate(playerCreationDetails));
+        PlayerDetails playerDetails = playerService.createPlayerWithName(nickname);
+        return ResponseEntity.ok(PlayerResponseTranslator.translate(playerDetails));
     }
 
-    @RequestMapping(value = "/getplayer/{playerid}", method = RequestMethod.GET, produces = "application/json")
+    @RequestMapping(value = "/getplayer/{playername}", method = RequestMethod.GET, produces = "application/json")
     public ResponseEntity<PlayerResponse> getPlayer(@PathVariable("playername") String playerName) {
-        throw new NotImplementedException();
+        PlayerDetails playerDetails = playerService.getPlayer(playerName);
+        return ResponseEntity.ok(PlayerResponseTranslator.translate(playerDetails));
     }
 
     @RequestMapping(value = "/ready/{playerid}", method = RequestMethod.GET, produces = "application/json")

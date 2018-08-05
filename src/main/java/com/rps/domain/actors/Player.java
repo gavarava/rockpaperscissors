@@ -52,5 +52,10 @@ public class Player {
 
     public enum State {
         WAITING, PLAYING;
+
+        @Override
+        public String toString() {
+            return this.name();
+        }
     }
 }

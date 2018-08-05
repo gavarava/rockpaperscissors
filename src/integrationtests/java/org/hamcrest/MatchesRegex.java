@@ -19,6 +19,6 @@ public class MatchesRegex extends TypeSafeMatcher<String> {
 
     @Override
     public void describeTo(Description description) {
-        description.appendText("matches regular exception");
+        description.appendText(expectedRegex);
     }
 }

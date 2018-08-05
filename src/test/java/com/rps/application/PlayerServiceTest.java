@@ -2,12 +2,15 @@ package com.rps.application;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
+import static org.hamcrest.Matchers.not;
+import static org.hamcrest.Matchers.nullValue;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.fail;
 
-import com.rps.application.players.PlayerCreationDetails;
+import com.rps.application.players.PlayerDetails;
 import com.rps.application.players.PlayerService;
 import com.rps.domain.PlayersInMemoryRepository;
+import com.rps.domain.actors.Player;
 import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
@@ -24,16 +27,35 @@ public class PlayerServiceTest {
 
     @Test
     public void shouldCreatePlayerWhenItDoesNotExist() {
-        PlayerCreationDetails playerCreationDetails = playerService.createPlayerWithName("SomePlayer");
-        assertNotNull(playerCreationDetails.getPlayer());
-        assertThat(playerCreationDetails.getCreationInfo(), is("Player Successfully Created"));
+        PlayerDetails playerDetails = playerService.createPlayerWithName("SomePlayer");
+        assertNotNull(playerDetails.getPlayer());
+        assertThat(playerDetails.getInfo(), is("Player Successfully Created"));
+    }
+
+    @Test
+    public void shouldReturnPlayerDetailsWhenPlayerExists() {
+        String testPlayerName = "TestPlayerName";
+        PlayerDetails createPlayerDetails = playerService.createPlayerWithName(testPlayerName);
+        PlayerDetails getPlayerResult = playerService.getPlayer(testPlayerName);
+        assertThat(getPlayerResult.getInfo(), is("TestPlayerName is WAITING"));
+        Player player = getPlayerResult.getPlayer();
+        assertThat(player, is(not(nullValue())));
+        assertThat(testPlayerName, is(player.getName()));
+    }
+
+    @Test
+    public void shouldReturnCorrectMessageWhenPlayerDoesNotExist() {
+        PlayerDetails getPlayerResult = playerService.getPlayer("RandomPlayerName");
+        assertThat(getPlayerResult.getInfo(), is("The player RandomPlayerName does not exist!!"));
+        Player player = getPlayerResult.getPlayer();
+        assertThat(player, is(nullValue()));
     }
 
     @Test
     public void shouldReturnAppropriateResponseWhenPlayerAlreadyExist() {
         playerService.createPlayerWithName("SomePlayer");
-        PlayerCreationDetails playerCreationDetails = playerService.createPlayerWithName("SomePlayer");
-        assertThat(playerCreationDetails.getCreationInfo(), is("Player with name SomePlayer already exists"));
+        PlayerDetails playerDetails = playerService.createPlayerWithName("SomePlayer");
+        assertThat(playerDetails.getInfo(), is("Player with name SomePlayer already exists"));
     }
 
     @Ignore(value = "TODO")
