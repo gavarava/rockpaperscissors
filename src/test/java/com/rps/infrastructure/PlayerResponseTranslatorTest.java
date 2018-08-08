@@ -4,10 +4,10 @@ import static org.hamcrest.Matchers.is;
 import static org.hamcrest.core.IsInstanceOf.instanceOf;
 import static org.junit.Assert.assertThat;
 
-import com.rps.application.players.PlayerDetails;
+import com.rps.application.players.PlayerServiceResponse;
 import com.rps.domain.actors.Player;
-import com.rps.infrastructure.players.NoPlayerCreatedResponse;
-import com.rps.infrastructure.players.PlayerSuccessfullyCreatedResponse;
+import com.rps.infrastructure.players.MessageResponse;
+import com.rps.infrastructure.players.DetailedPlayerResponse;
 import com.rps.infrastructure.players.PlayerResponse;
 import com.rps.infrastructure.players.PlayerResponseTranslator;
 import org.junit.Test;
@@ -15,26 +15,26 @@ import org.junit.Test;
 public class PlayerResponseTranslatorTest {
 
     @Test
-    public void shouldReturnNoPlayerCreatedResponseWhenPlayerAlreadyExists() {
+    public void shouldReturnOnlyMessageResponseWhenPlayerIsNull() {
         String playerCreationInfoMessage = "Player with name XYZ already exists";
-        PlayerDetails playerDetails = new PlayerDetails(null,
+        PlayerServiceResponse playerServiceResponse = new PlayerServiceResponse(null,
             playerCreationInfoMessage);
-        PlayerResponse playerResponse = PlayerResponseTranslator.translate(playerDetails);
-        assertThat(playerResponse, is(instanceOf(NoPlayerCreatedResponse.class)));
-        NoPlayerCreatedResponse noPlayerCreatedResponse = (NoPlayerCreatedResponse) playerResponse;
-        assertThat(noPlayerCreatedResponse.getMessage(), is(playerCreationInfoMessage));
+        PlayerResponse playerResponse = PlayerResponseTranslator.translate(playerServiceResponse);
+        assertThat(playerResponse, is(instanceOf(MessageResponse.class)));
+        MessageResponse messageResponse = (MessageResponse) playerResponse;
+        assertThat(messageResponse.getMessage(), is(playerCreationInfoMessage));
     }
 
     @Test
-    public void shouldCreatePlayerSuccessfullyCreatedResponseWhenPlayerDoesNotExist() {
+    public void shouldReturnDetailedResponseWhenPlayerIsNotNull() {
         Player player = new Player("NewPlayer");
         String playerCreationInfoMessage = "Player with name was successfully created";
-        PlayerDetails playerDetails = new PlayerDetails(player,
+        PlayerServiceResponse playerServiceResponse = new PlayerServiceResponse(player,
             playerCreationInfoMessage);
-        PlayerResponse playerResponse = PlayerResponseTranslator.translate(playerDetails);
-        assertThat(playerResponse, is(instanceOf(PlayerSuccessfullyCreatedResponse.class)));
-        PlayerSuccessfullyCreatedResponse playerSuccessfullyCreatedResponse = (PlayerSuccessfullyCreatedResponse) playerResponse;
-        assertThat(playerSuccessfullyCreatedResponse.getResponseMessage(), is(playerCreationInfoMessage));
+        PlayerResponse playerResponse = PlayerResponseTranslator.translate(playerServiceResponse);
+        assertThat(playerResponse, is(instanceOf(DetailedPlayerResponse.class)));
+        DetailedPlayerResponse detailedPlayerResponse = (DetailedPlayerResponse) playerResponse;
+        assertThat(detailedPlayerResponse.getResponseMessage(), is(playerCreationInfoMessage));
     }
 
 }

@@ -7,7 +7,7 @@ import static org.hamcrest.Matchers.nullValue;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.fail;
 
-import com.rps.application.players.PlayerDetails;
+import com.rps.application.players.PlayerServiceResponse;
 import com.rps.application.players.PlayerService;
 import com.rps.domain.PlayersInMemoryRepository;
 import com.rps.domain.actors.Player;
@@ -27,17 +27,17 @@ public class PlayerServiceTest {
 
     @Test
     public void shouldCreatePlayerWhenItDoesNotExist() {
-        PlayerDetails playerDetails = playerService.createPlayerWithName("SomePlayer");
-        assertNotNull(playerDetails.getPlayer());
-        assertThat(playerDetails.getInfo(), is("Player Successfully Created"));
+        PlayerServiceResponse playerServiceResponse = playerService.createPlayerWithName("SomePlayer");
+        assertNotNull(playerServiceResponse.getPlayer());
+        assertThat(playerServiceResponse.getMessage(), is("Player Successfully Created"));
     }
 
     @Test
     public void shouldReturnPlayerDetailsWhenPlayerExists() {
         String testPlayerName = "TestPlayerName";
-        PlayerDetails createPlayerDetails = playerService.createPlayerWithName(testPlayerName);
-        PlayerDetails getPlayerResult = playerService.getPlayer(testPlayerName);
-        assertThat(getPlayerResult.getInfo(), is("TestPlayerName is WAITING"));
+        PlayerServiceResponse createPlayerServiceResponse = playerService.createPlayerWithName(testPlayerName);
+        PlayerServiceResponse getPlayerResult = playerService.getPlayer(testPlayerName);
+        assertThat(getPlayerResult.getMessage(), is("Found player TestPlayerName"));
         Player player = getPlayerResult.getPlayer();
         assertThat(player, is(not(nullValue())));
         assertThat(testPlayerName, is(player.getName()));
@@ -45,8 +45,8 @@ public class PlayerServiceTest {
 
     @Test
     public void shouldReturnCorrectMessageWhenPlayerDoesNotExist() {
-        PlayerDetails getPlayerResult = playerService.getPlayer("RandomPlayerName");
-        assertThat(getPlayerResult.getInfo(), is("The player RandomPlayerName does not exist!!"));
+        PlayerServiceResponse getPlayerResult = playerService.getPlayer("RandomPlayerName");
+        assertThat(getPlayerResult.getMessage(), is("The player RandomPlayerName does not exist!!"));
         Player player = getPlayerResult.getPlayer();
         assertThat(player, is(nullValue()));
     }
@@ -54,22 +54,73 @@ public class PlayerServiceTest {
     @Test
     public void shouldReturnAppropriateResponseWhenPlayerAlreadyExist() {
         playerService.createPlayerWithName("SomePlayer");
-        PlayerDetails playerDetails = playerService.createPlayerWithName("SomePlayer");
-        assertThat(playerDetails.getInfo(), is("Player with name SomePlayer already exists"));
+        PlayerServiceResponse playerServiceResponse = playerService.createPlayerWithName("SomePlayer");
+        assertThat(playerServiceResponse.getMessage(), is("Player with name SomePlayer already exists"));
     }
 
-    @Ignore(value = "TODO")
+    @Test
+    public void shouldChangeStateOfPlayerWhenRequestedByTheSamePlayer() {
+        String playerName = "PlayerX";
+        PlayerServiceResponse playerServiceResponse = playerService.createPlayerWithName(playerName);
+        assertThat(playerServiceResponse.getMessage(), is("Player Successfully Created"));
+        Player player = playerServiceResponse.getPlayer();
+        assertThat(player.getState(), is(Player.State.WAITING));
+        assertThat(player, is(not(nullValue())));
+        assertThat(playerName, is(player.getName()));
+
+        Player.State newState = Player.State.READY;
+        playerService.changePlayerState(playerName, newState);
+
+        PlayerServiceResponse getPlayerServiceResponse = playerService.getPlayer(playerName);
+        Player latestPlayerDetails = getPlayerServiceResponse.getPlayer();
+        assertThat(latestPlayerDetails.getState(), is(Player.State.READY));
+    }
+
+    @Test
+    public void shouldReturnErrorMessageDuringChangePlayerStateWhenPlayerDoesNotExist() {
+        Player.State newState = Player.State.READY;
+        String playerName = "NonExistentPlayer";
+
+        playerService.changePlayerState(playerName, newState);
+
+        PlayerServiceResponse getPlayerServiceResponse = playerService.getPlayer(playerName);
+        assertThat(getPlayerServiceResponse.getPlayer(), is(nullValue()));
+        assertThat(getPlayerServiceResponse.getMessage(), is("The player NonExistentPlayer does not exist!!"));
+    }
+
+    @Test
+    public void shouldNotBeAbleToChangeStateFromWaitingToPlayingDirectly() {
+        String playerName = "PlayerPlayingAGame";
+        createPlayerWithName(playerName);
+
+        PlayerServiceResponse playerServiceResponse = playerService.changePlayerState(playerName, Player.State.PLAYING);
+        assertThat(playerServiceResponse.getMessage(), is("A Player cannot start playing unless, he/she is READY to play"));
+    }
+
+    @Test
     public void shouldDeletePlayerWhenRequested() {
-        fail();
+        String playerNameForTest = "PlayerForDeletion";
+        Player player = createPlayerWithName(playerNameForTest);
+        playerService.deletePlayer(player.getName());
+        PlayerServiceResponse getPlayerResponse = playerService.getPlayer(playerNameForTest);
+        assertThat(getPlayerResponse.getPlayer(), is(nullValue()));
     }
 
-    @Ignore(value = "TODO")
     @Test(expected = IllegalStateException.class)
-    public void shouldThrowExceptionWhenDeletingAPlayerInTheMiddleOfAGame() {
-        // Given a player that is in the middle of a game
-        // When trying to delete a player
-        //It should throw IllegalStateException
+    public void shouldThrowExceptionWhenTryingToDeletePlayerWhenStateIsPlaying() {
+        String playerName = "PlayerPlayingAGame";
+        createPlayerWithName(playerName);
 
+        playerService.changePlayerState(playerName, Player.State.READY);
+        playerService.changePlayerState(playerName, Player.State.PLAYING);
+
+        playerService.deletePlayer(playerName);
     }
+
+    private Player createPlayerWithName(String playerName) {
+        PlayerServiceResponse playerServiceResponse = playerService.createPlayerWithName(playerName);
+        return playerServiceResponse.getPlayer();
+    }
+
 
 }

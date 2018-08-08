@@ -42,20 +42,23 @@ public class Player {
         this.numberOfLosses = numberOfLosses;
     }
 
+    public State getState() {
+        return state;
+    }
+
+    public void setState(State state) {
+        this.state = state;
+    }
+
     public void changeStateTo(State state) {
         this.state = state;
     }
 
-    public State currentState() {
+    State currentState() {
         return this.state;
     }
 
     public enum State {
-        WAITING, PLAYING;
-
-        @Override
-        public String toString() {
-            return this.name();
-        }
+        WAITING, PLAYING, READY;
     }
 }

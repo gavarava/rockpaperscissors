@@ -1,10 +1,10 @@
 package com.rps.infrastructure.players;
 
-public class NoPlayerCreatedResponse implements PlayerResponse {
+public class MessageResponse implements PlayerResponse {
 
     private String message;
 
-    public NoPlayerCreatedResponse(String responseMessage) {
+    public MessageResponse(String responseMessage) {
         this.message = responseMessage;
     }
 

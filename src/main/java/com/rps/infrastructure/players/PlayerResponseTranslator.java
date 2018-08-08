@@ -1,6 +1,6 @@
 package com.rps.infrastructure.players;
 
-import com.rps.application.players.PlayerDetails;
+import com.rps.application.players.PlayerServiceResponse;
 
 /**
  * This is helping us tailor the response object exactly according to what we get, it would specially be useful when you
@@ -12,12 +12,12 @@ public class PlayerResponseTranslator {
     private PlayerResponseTranslator() {
     }
 
-    public static PlayerResponse translate(PlayerDetails playerDetails) {
-        if (playerDetails.getPlayer() == null) {
-            return new NoPlayerCreatedResponse(playerDetails.getInfo());
+    public static PlayerResponse translate(PlayerServiceResponse playerServiceResponse) {
+        if (playerServiceResponse.getPlayer() == null) {
+            return new MessageResponse(playerServiceResponse.getMessage());
         }
-        return new PlayerSuccessfullyCreatedResponse(playerDetails.getInfo(),
-            playerDetails.getPlayer());
+        return new DetailedPlayerResponse(playerServiceResponse.getMessage(),
+            playerServiceResponse.getPlayer());
     }
 
 }

@@ -1,7 +1,8 @@
 package com.rps.infrastructure;
 
-import com.rps.application.players.PlayerDetails;
+import com.rps.application.players.PlayerServiceResponse;
 import com.rps.application.players.PlayerService;
+import com.rps.domain.actors.Player;
 import com.rps.domain.gameplay.ActionType;
 import com.rps.infrastructure.players.PlayerResponse;
 import com.rps.infrastructure.players.PlayerResponseTranslator;
@@ -28,21 +29,22 @@ public class RockPaperScissorsController {
         return new DefaultResponse("pong", "TEST");
     }
 
-    @RequestMapping(value = "/register/{nickname}", method = RequestMethod.POST, produces = "application/json")
-    public ResponseEntity<PlayerResponse> registerPlayer(@PathVariable("nickname") String nickname) {
-        PlayerDetails playerDetails = playerService.createPlayerWithName(nickname);
-        return ResponseEntity.ok(PlayerResponseTranslator.translate(playerDetails));
+    @RequestMapping(value = "/register/{playerName}", method = RequestMethod.POST, produces = "application/json")
+    public ResponseEntity<PlayerResponse> registerPlayer(@PathVariable("playerName") String playerName) {
+        PlayerServiceResponse playerServiceResponse = playerService.createPlayerWithName(playerName);
+        return ResponseEntity.ok(PlayerResponseTranslator.translate(playerServiceResponse));
     }
 
     @RequestMapping(value = "/getplayer/{playername}", method = RequestMethod.GET, produces = "application/json")
     public ResponseEntity<PlayerResponse> getPlayer(@PathVariable("playername") String playerName) {
-        PlayerDetails playerDetails = playerService.getPlayer(playerName);
-        return ResponseEntity.ok(PlayerResponseTranslator.translate(playerDetails));
+        PlayerServiceResponse playerServiceResponse = playerService.getPlayer(playerName);
+        return ResponseEntity.ok(PlayerResponseTranslator.translate(playerServiceResponse));
     }
 
-    @RequestMapping(value = "/ready/{playerid}", method = RequestMethod.GET, produces = "application/json")
-    public Response ready(@PathVariable("playerid") long playerid) {
-        throw new NotImplementedException();
+    @RequestMapping(value = "/readyplayer/{playername}", method = RequestMethod.GET, produces = "application/json")
+    public ResponseEntity<PlayerResponse> ready(@PathVariable("playername") String playerName) {
+        PlayerServiceResponse playerServiceResponse = playerService.changePlayerState(playerName, Player.State.READY);
+        return ResponseEntity.ok(PlayerResponseTranslator.translate(playerServiceResponse));
     }
 
     @RequestMapping(value = "/actionType/{playerid}/{actionType}", method = RequestMethod.GET, produces = "application/json")
