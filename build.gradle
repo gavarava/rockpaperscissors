@@ -26,6 +26,11 @@ repositories {
 	mavenCentral()
 }
 
+wrapper {
+    distributionType = Wrapper.DistributionType.ALL
+}
+
+defaultTasks 'clean', 'build', 'test', 'integrationtests'
 
 sourceSets {
     main {
