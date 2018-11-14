@@ -2,15 +2,15 @@ group 'com.rps'
 version '1.0-SNAPSHOT'
 
 buildscript {
-	ext {
-		springBootVersion = '2.0.2.RELEASE'
-	}
-	repositories {
-		mavenCentral()
-	}
-	dependencies {
-		classpath("org.springframework.boot:spring-boot-gradle-plugin:${springBootVersion}")
-	}
+    ext {
+        springBootVersion = '2.0.2.RELEASE'
+    }
+    repositories {
+        mavenCentral()
+    }
+    dependencies {
+        classpath("org.springframework.boot:spring-boot-gradle-plugin:${springBootVersion}")
+    }
 }
 
 apply plugin: 'java'
@@ -23,7 +23,7 @@ version = '0.0.1-SNAPSHOT'
 sourceCompatibility = 1.8
 
 repositories {
-	mavenCentral()
+    mavenCentral()
 }
 
 wrapper {
@@ -41,6 +41,10 @@ sourceSets {
     test {
         java {
             srcDirs = ['src/test/java']
+        }
+    }
+    integrationTest {
+        java {
             srcDirs = ['src/integrationtests/java']
         }
     }
