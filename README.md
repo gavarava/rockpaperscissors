@@ -1,45 +1,53 @@
-See all avaiable build tasks
-gradlew.bat tasks
+# Rock Paper Scissors
 
-Build Using
-gradlew.bat clean build
+A simple Rock Paper Scissors REST Application using Spring Boot
 
-Run Unit Tests (This is not running the tests currently, but IDE can run all unit tests)
-gradlew.bat test
+## Getting Started
 
-The Projects Package Structure tries to apply "Clean Architecture" principles.
- 
+These instructions will get you a copy of the project up and running on your local machine for development and testing purposes.
 
-Some Requirements & Details 
-A player is the "Call to Action" for this API. This is where the game will start.
+### Building the project
 
-SessionService.
-	Create a Session when No Sessions Exist and a Player requests to join.
-	A session could be Ready when only one player exists.
-	Join a Session when another player requests.
-	Create new session when there are no Ready Sessions.
-	
-A session contains Contains Players, two ready players make a game ?
-An session is created when a Player requests a game.
-	Player state initially is unready.
-	Player state should be ready to start a game.
-	Player Waits for a Game.
-	
-Someone takes ready players and randomly sets them up in a game ?	
-What happens when multiple Unready players are there ?
+Project is bundled with the Gradle Wrapper
 
-Session
-	Identified by a unique ID.
-	Contains Two Players and State == Ready ....
-	Contains a Game-ScoreCounter Map.
+```
+gradlew clean build test
+```
 
-Player
-	Requests a Game.
-	Waits for the Game state to be Ready.
-	Does an Action signifying the game play.
-	Joins / Leaves the session.
+Or by default just run
 
-Game
-	Created when a player requests a game.
-	Contains at least one player.
-	State == Ready / Over / InProgress
+```
+gradlew
+```
+
+End with an example of getting some data out of the system or using it for a little demo
+
+## Running the tests
+
+gradlew test
+
+## Run the application
+
+java -jar build/libs/rock-paper-scissors-0.0.1-SNAPSHOT.jar
+
+## Built With
+
+* [SpringBoot](http://spring.io/projects/spring-boot) - The web framework used
+* [Gradle](https://gradle.org/) - Dependency Management
+
+## Versioning
+
+Using Git for Versioning
+
+## Authors
+
+* **Gaurav Edekar** - https://github.com/gavarava
+
+## License
+
+This project is licensed under the MIT License - see the [LICENSE.md](LICENSE.md) file for details
+
+## Acknowledgments
+
+* Google
+* Safari Books Online
