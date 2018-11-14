@@ -30,7 +30,7 @@ wrapper {
     distributionType = Wrapper.DistributionType.ALL
 }
 
-defaultTasks 'clean', 'build', 'test', 'integrationtests'
+defaultTasks 'clean', 'build', 'test'
 
 sourceSets {
     main {
@@ -41,11 +41,7 @@ sourceSets {
     test {
         java {
             srcDirs = ['src/test/java']
-        }
-    }
-    integrationTest {
-        java {
-            srcDirs = ['src/integrationtests/java']
+            srcDirs = ['src/integrationtest/java']
         }
     }
 }
