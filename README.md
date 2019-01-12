@@ -1,4 +1,4 @@
-# Rock Paper Scissors
+# Rock Paper Scissors           [![Build Status](https://travis-ci.org/gavarava/rockpaperscissors.svg?branch=master)](https://travis-ci.org/gavarava/rockpaperscissors)
 
 A simple Rock Paper Scissors REST Application using Spring Boot
 
