@@ -12,6 +12,7 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
 
+import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertThat;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
@@ -40,6 +41,7 @@ public class RPSApplicationIT {
 
     @Test
     public void checkWhetherWebApplicationContextAndTheRepositoryLoadsSuccessfully() {
+        assertNotNull(playersInMemoryRepository);
         assertThat(playersInMemoryRepository.count(), Matchers.greaterThanOrEqualTo(0));
     }
 

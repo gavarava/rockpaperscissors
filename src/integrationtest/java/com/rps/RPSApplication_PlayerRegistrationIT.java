@@ -23,7 +23,6 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 /**
  * Integration testing the actual API Check the guide here: https://spring.io/guides/gs/testing-web/
- * TODO Tests are not independant of each other, since they fail when we use same names
  */
 @RunWith(SpringJUnit4ClassRunner.class)
 @SpringBootTest
@@ -98,24 +97,6 @@ public class RPSApplication_PlayerRegistrationIT {
         assertThat(response, matchesRegex(
                 "^\\{\"responseMessage\":null,\"player\":\\{\"id\":[0-9]+,\"name\":\"" +
                         ""+playerName+"\",\"state\":\"READY\",\"numberOfWins\":0,\"numberOfLosses\":0}}$"));
-    }
-
-    @Test
-    @Ignore(value="This violates SRP, the Player Server need not enable players to play against each other")
-    public void thatTwoRegisteredPlayersCanPlayAgainstEachOther() throws Exception {
-        String player1 = "Trish";
-        assertCreatePlayerResponseString(player1, registerPlayerForTest(player1));
-
-        String player2 = "Jacksparrow";
-        assertCreatePlayerResponseString(player2, registerPlayerForTest(player2));
-
-        // player1 ready
-        // player2 ready
-
-        //player1 action
-        //player2 action
-
-        //try to do something, response should be game over
     }
 
     private String getPlayer(String playerName) throws Exception {
