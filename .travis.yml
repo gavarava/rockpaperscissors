@@ -6,3 +6,9 @@ jdk:
 
 script:
   - ./gradlew clean build
+  - sonar-scanner
+  - ./gradlew sonarqube \
+      -Dsonar.projectKey=gavarava_rockpaperscissors \
+      -Dsonar.organization=gavarava-github \
+      -Dsonar.host.url=https://sonarcloud.io \
+      -Dsonar.login=470b13d219a1a1344add0db3953ff49a35e1eee9
