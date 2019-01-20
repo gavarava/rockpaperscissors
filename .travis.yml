@@ -11,4 +11,5 @@ jdk:
   - openjdk8
 
 script:
+  - sonar-scanner
   - ./gradlew clean build
