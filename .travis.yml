@@ -10,4 +10,5 @@ addons:
     token: $SONAR_TOKEN
 
 script:
+  - ./gradlew clean build
   - sonar-scanner
