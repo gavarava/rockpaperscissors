@@ -6,8 +6,4 @@ jdk:
 
 script:
   - ./gradlew clean build
-  - ./gradlew sonarqube \
-      -Dsonar.projectKey=gavarava_rockpaperscissors \
-      -Dsonar.organization=gavarava-github \
-      -Dsonar.host.url=https://sonarcloud.io \
-      -Dsonar.login=rockpaperscissors
+  - ./gradlew sonarqube -Dsonar.projectKey=gavarava_rockpaperscissors -Dsonar.organization=gavarava-github -Dsonar.host.url=https://sonarcloud.io -Dsonar.login=rockpaperscissors
