@@ -4,6 +4,11 @@ install: true
 jdk:
   - openjdk8
 
+addons:
+  sonarcloud:
+    organization: "gavarava-github"
+    token:
+      secure: "NKB2nctJKnpcspRoboaPY9hT0e31s7JogRx4iQwGu6MsNxCT+jXgRq0U1QNWeNXXggT+7yc0nCVvgGbxA+BERuuNE8PN5hxO50hK0xqQWtkHQeFQJRrz1AMLc4GylerFpxfeB0fMf6Pkhl61uJHzBus4tnkMHImnSieTGOQ9tjQPs5u78Ddx/Lwec5m6vQmEVKX4DGSvAKSR685GqfXmXrqkLLJqRodG0XWIPIBPr+BuM4oMwV0qz26EFfp5OKZXlRB51q7Kk6rK4iiDWK6KTvGo9j5+oKWlE5ZXGiHplyi8SrEEauvN3MpOBBnlzyH7xbB5UEYKCQ8FIrmdHgHfj7rIVCr9PKcRRksuRZMV3H+cLq8oICfLSMSh2Umu/Bac+FaZZr+i6uiPoOJ6jotuQEZtYmKlgeezmhXGwIPQJKJID8/dbHdRWHHMdrkWeQeMyXt4S4fHlsIHHkQG7B1FL0Cdu12dlnbUo4tiiA2uE8ktP6SRfZWUFuOg99dFfD4RpMxj9HTpQrCPGJOy9wxOy0rct40YAeFQH4YB/phjod51cM/XFymZbKYBuIOYkBRHHnkvuxaiG+04aiJW7EEMN5W1xXovSMtsHKk7+r+TRPcP85RzfuD+Vo1cEHlYEey8050gLkyX9GDwtiLLysaDBfIo3e+TTwFrPN/pqfWo18M="
+
 script:
-  - ./gradlew clean build
-  - ./gradlew sonarqube -Dsonar.projectKey=gavarava_rockpaperscissors -Dsonar.organization=gavarava-github -Dsonar.host.url=https://sonarcloud.io -Dsonar.login=rockpaperscissors -Dsonar.password=
+  - sonar-scanner
