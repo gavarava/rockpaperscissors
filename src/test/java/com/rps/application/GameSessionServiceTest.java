@@ -6,13 +6,12 @@ import com.rps.domain.gameplay.InvalidOperationException;
 import com.rps.domain.gameplay.Invite;
 import org.junit.Test;
 
-import static com.rps.domain.gameplay.GameSession.*;
+import static com.rps.domain.gameplay.GameSession.State;
 import static com.rps.domain.gameplay.GameSession.State.ACCEPTED;
 import static com.rps.domain.gameplay.GameSession.State.WAITING;
-import static org.hamcrest.Matchers.equalTo;
-import static org.hamcrest.Matchers.greaterThan;
-import static org.hamcrest.Matchers.is;
-import static org.junit.Assert.*;
+import static org.hamcrest.Matchers.*;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertThat;
 
 public class GameSessionServiceTest {
 
@@ -65,10 +64,10 @@ public class GameSessionServiceTest {
         long sessionIdForPlayer1 = session.getId();
 
         Player player2 = new Player("Player2");
-        long sessionIdForPlayer2 = gameSessionService.acceptInvite(player2, invite.getCode());
+        GameSession gameSessionForPlayer2 = gameSessionService.acceptInvite(player2, invite.getCode());
 
         assertThat(session.state(), is(ACCEPTED));
-        assertThat(sessionIdForPlayer2, is(equalTo(sessionIdForPlayer1)));
+        assertThat(gameSessionForPlayer2.getId(), is(equalTo(sessionIdForPlayer1)));
         assertThat(session.getFirstPlayer(), is(player1));
         assertThat(session.getSecondPlayer(), is(player2));
     }
@@ -87,8 +86,6 @@ public class GameSessionServiceTest {
         } catch (InvalidOperationException e) {
             assertThat(e.getMessage(), is("A player cannot accept their own invite"));
         }
-
-
     }
 
 }

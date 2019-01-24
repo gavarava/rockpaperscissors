@@ -38,8 +38,7 @@ sourceSets {
     }
     test {
         java {
-            srcDirs = ['src/test/java']
-            srcDirs = ['src/integrationtest/java']
+            srcDirs = [['src/test/java', 'src/integrationtest/java']]
         }
     }
 }
@@ -60,11 +59,11 @@ dependencies {
             'org.springframework.boot:spring-boot-starter-actuator',
             'org.springframework.data:spring-data-jpa',
             'org.springframework.boot:spring-boot-devtools',
-            'org.hamcrest:java-hamcrest:2.0.0.0'
     )
     testCompile(
             'junit:junit:4.12',
             'org.springframework.boot:spring-boot-starter-test',
-            'org.hamcrest:hamcrest-all:1.3'
+            'org.hamcrest:hamcrest-all:1.3',
+            'org.json:json:20180813'
     )
 }

@@ -1,23 +1,16 @@
 package com.rps;
 
-import com.rps.domain.PlayersInMemoryRepository;
 import com.rps.domain.actors.Player;
-import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
-import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
-import org.springframework.test.web.servlet.setup.MockMvcBuilders;
-import org.springframework.web.context.WebApplicationContext;
 
 import static org.hamcrest.MatchesRegex.matchesRegex;
 import static org.junit.Assert.assertThat;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 /**
@@ -25,20 +18,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
  */
 @RunWith(SpringJUnit4ClassRunner.class)
 @SpringBootTest
-public class RPSApplication_PlayerRegistrationIT {
-
-    @Autowired
-    private WebApplicationContext context;
-
-    @Autowired
-    private PlayersInMemoryRepository playersInMemoryRepository;
-
-    private MockMvc mockMvc;
-
-    @Before
-    public void setupMockMvc() {
-        mockMvc = MockMvcBuilders.webAppContextSetup(context).build();
-    }
+public class RPSApplication_PlayerRegistrationIT extends RPSTestsMother {
 
     @Test
     public void shouldAddPlayerSuccessfullyUsingAPI() throws Exception {
@@ -105,15 +85,6 @@ public class RPSApplication_PlayerRegistrationIT {
                         .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk()).andReturn();
 
-        return mvcResult.getResponse().getContentAsString();
-    }
-
-    private String registerPlayerForTest(String playerName) throws Exception {
-        MvcResult mvcResult = this.mockMvc
-                .perform(post("/register/" + playerName)
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .accept(MediaType.APPLICATION_JSON))
-                .andExpect(status().isOk()).andReturn();
         return mvcResult.getResponse().getContentAsString();
     }
 

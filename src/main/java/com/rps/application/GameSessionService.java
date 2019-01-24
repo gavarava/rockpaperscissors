@@ -4,10 +4,12 @@ import com.rps.domain.actors.Player;
 import com.rps.domain.gameplay.GameSession;
 import com.rps.domain.gameplay.InvalidOperationException;
 import com.rps.domain.gameplay.Invite;
+import org.springframework.stereotype.Service;
 
 import java.util.HashMap;
 import java.util.Map;
 
+@Service
 public class GameSessionService {
 
     private final Map<String, GameSession> sessions = new HashMap<>();
@@ -16,27 +18,27 @@ public class GameSessionService {
         return new Invite(player);
     }
 
-    GameSession createSessionFrom(Invite invite) {
+    public GameSession createSessionFrom(Invite invite) {
         GameSession gameSession = new GameSession(invite);
         sessions.put(gameSession.getInviteCode(), gameSession);
         return gameSession;
     }
 
-    Map<String, GameSession> sessions() {
+    public Map<String, GameSession> sessions() {
         return sessions;
     }
 
-    GameSession findSessionWithInvite(String inviteCode) {
-        return sessions.get(inviteCode);
-    }
-
-    long acceptInvite(Player player, String inviteCode) throws InvalidOperationException {
+    public GameSession acceptInvite(Player player, String inviteCode) throws InvalidOperationException {
         GameSession gameSession = findSessionWithInvite(inviteCode);
         if (player.equals(gameSession.getFirstPlayer())) {
             throw new InvalidOperationException("A player cannot accept their own invite");
         }
         gameSession.addOpponent(player);
         gameSession.changeStateTo(GameSession.State.ACCEPTED);
-        return gameSession.getId();
+        return gameSession;
+    }
+
+    GameSession findSessionWithInvite(String inviteCode) {
+        return sessions.get(inviteCode);
     }
 }

@@ -2,8 +2,6 @@ package com.rps.domain.gameplay;
 
 import com.rps.domain.actors.Player;
 
-import static com.rps.domain.gameplay.GameSession.State.ACCEPTED;
-
 public class GameSession {
 
     private long sessionId;
@@ -32,8 +30,8 @@ public class GameSession {
         return this.sessionId;
     }
 
-    public void changeStateTo(State accepted) {
-        this.state = ACCEPTED;
+    public void changeStateTo(State state) {
+        this.state = state;
     }
 
     public Player getFirstPlayer() {
@@ -48,8 +46,7 @@ public class GameSession {
         this.secondPlayer = player;
     }
 
-    public enum State
-    {
+    public enum State {
         WAITING, ACCEPTED
     }
 }
