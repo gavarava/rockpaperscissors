@@ -7,6 +7,10 @@ public class DetailedPlayerResponse implements PlayerResponse {
     private String responseMessage;
     private Player player;
 
+    public DetailedPlayerResponse(Player player) {
+        this.player = player;
+    }
+
     public DetailedPlayerResponse(String responseMessage, Player player) {
         this.responseMessage = responseMessage;
         this.player = player;

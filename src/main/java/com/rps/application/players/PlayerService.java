@@ -11,6 +11,8 @@ import java.text.MessageFormat;
 @Service
 public class PlayerService {
 
+    private static final String PLAYER_DOES_NOT_EXIST = "Player {0} does not exist";
+
     @Autowired
     PlayersInMemoryRepository playersInMemoryRepository;
 
@@ -39,33 +41,34 @@ public class PlayerService {
     public PlayerServiceResponse getPlayer(String name) {
         Player player = playersInMemoryRepository.findByName(name);
         if (player == null) {
-            return new PlayerServiceResponse(null, "The player " + name + " does not exist!!");
+            return new PlayerServiceResponse(null, String.format(PLAYER_DOES_NOT_EXIST, name));
         }
-        return new PlayerServiceResponse(player, "Found player " + player.getName());
+        return new PlayerServiceResponse(player);
     }
 
     public PlayerServiceResponse changePlayerState(String existingPlayerName, Player.State newState) {
         Player player = playersInMemoryRepository.findByName(existingPlayerName);
         if (player == null) {
-            return new PlayerServiceResponse(null, "The player " + existingPlayerName + " does not exist!!");
+            return new PlayerServiceResponse(null, String.format(PLAYER_DOES_NOT_EXIST, existingPlayerName));
         }
         Player.State currentStateOfPlayer = player.getState();
         if (Player.State.PLAYING.equals(newState) && Player.State.WAITING.equals(currentStateOfPlayer)) {
-            return new PlayerServiceResponse("A Player cannot start playing unless, he/she is READY to play");
+            return new PlayerServiceResponse("Players cannot start playing unless they are READY to play");
         }
         player.changeStateTo(newState);
         return new PlayerServiceResponse(player);
     }
 
-    public PlayerServiceResponse deletePlayer(String name) {
+    public void deletePlayer(String name) {
         Player player = playersInMemoryRepository.findByName(name);
         if (player == null) {
-            return new PlayerServiceResponse(null, "The player " + name + " does not exist!!");
+            new PlayerServiceResponse(null, String.format(PLAYER_DOES_NOT_EXIST, name));
+            return;
         }
         if (Player.State.PLAYING.equals(player.getState())) {
             throw new IllegalStateException("Cannot delete a Player in the middle of a game.");
         }
         playersInMemoryRepository.delete(player);
-        return new PlayerServiceResponse(MessageFormat.format("Player {0} was deleted successfully", name));
+        new PlayerServiceResponse(MessageFormat.format("Player {0} was deleted successfully", name));
     }
 }

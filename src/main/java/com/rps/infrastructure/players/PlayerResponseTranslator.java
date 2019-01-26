@@ -16,8 +16,9 @@ public class PlayerResponseTranslator {
         if (playerServiceResponse.getPlayer() == null) {
             return new MessageResponse(playerServiceResponse.getMessage());
         }
-        return new DetailedPlayerResponse(playerServiceResponse.getMessage(),
-            playerServiceResponse.getPlayer());
+        return playerServiceResponse.getMessage() != null ? new DetailedPlayerResponse(playerServiceResponse
+                .getMessage(),
+                playerServiceResponse.getPlayer()) : new DetailedPlayerResponse(playerServiceResponse.getPlayer());
     }
 
 }

@@ -4,6 +4,7 @@ import com.rps.domain.actors.Player;
 import com.rps.infrastructure.repository.CrudRepository;
 import com.rps.infrastructure.repository.exceptions.AlreadyExistsException;
 import com.rps.infrastructure.repository.exceptions.NotFoundException;
+
 import java.util.HashSet;
 import java.util.Set;
 
@@ -55,7 +56,7 @@ public class PlayersInMemoryRepository implements CrudRepository<Player, Long> {
     }
 
     @Override
-    public void delete(Player player) throws NotFoundException {
+    public void delete(Player player) {
         long playerId = player.getId();
         if (!exists(playerId)) {
             throw new NotFoundException("Player with id " + playerId + " does not exist");
@@ -64,7 +65,7 @@ public class PlayersInMemoryRepository implements CrudRepository<Player, Long> {
     }
 
     @Override
-    public void deleteById(Long id) throws NotFoundException {
+    public void deleteById(Long id) {
         if (!exists(id)) {
             throw new NotFoundException("Player with id " + id + " does not exist");
         }
