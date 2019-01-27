@@ -1,7 +1,6 @@
 package com.rps;
 
 import org.json.JSONObject;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -26,7 +25,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 public class RPSApplication_PlayerRegistrationIT extends RPSTestsMother {
 
     @Test
-    public void shouldAddPlayerSuccessfullyUsingAPI() throws Exception {
+    public void shouldAddPlayerSuccessfullyUsingAPI() {
         // Given a playerName
         String playerName = "PlayerOne";
 
@@ -43,7 +42,7 @@ public class RPSApplication_PlayerRegistrationIT extends RPSTestsMother {
     @Test
     public void shouldBeAbleToGetRegisteredPlayerUsingAPI() throws Exception {
         // Given a registered player
-        String playerName = "PlayerOne";
+        String playerName = "PlayerOneA";
         registerPlayerSuccessfullyUsingAPI(playerName);
 
         //When getPlayer api is invoked
@@ -59,10 +58,9 @@ public class RPSApplication_PlayerRegistrationIT extends RPSTestsMother {
     }
 
     @Test
-    @Ignore(value = "FIXME - Not working")
     public void shouldNotCreateMultiplePlayersWithSameName() throws Exception {
         // Given a registered player PlayerOne
-        String playerName = "PlayerOne";
+        String playerName = "PlayerOneB";
         registerPlayerSuccessfullyUsingAPI(playerName);
 
         // When we register another Player with same name
@@ -73,7 +71,7 @@ public class RPSApplication_PlayerRegistrationIT extends RPSTestsMother {
                 .andExpect(status().isBadRequest()).andReturn();
 
         // Then it should give error message
-        assertThat(result.getResponse().getContentAsString(), is(""));
+        assertThat(result.getResponse().getContentAsString(), is("PlayerOneB already exists"));
     }
 
     private void registerPlayerSuccessfullyUsingAPI(String playerName) throws Exception {
@@ -86,9 +84,9 @@ public class RPSApplication_PlayerRegistrationIT extends RPSTestsMother {
 
     @Test
     public void thatRegisteringThreePlayersKeepsEveryoneWaiting() throws Exception {
-        String player1 = "PlayerA";
-        String player2 = "PlayerB";
-        String player3 = "PlayerC";
+        String player1 = "PlayerX1";
+        String player2 = "PlayerX2";
+        String player3 = "PlayerX3";
 
         registerPlayerSuccessfullyUsingAPI(player1);
         registerPlayerSuccessfullyUsingAPI(player2);

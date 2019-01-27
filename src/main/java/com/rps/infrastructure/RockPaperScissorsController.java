@@ -39,33 +39,32 @@ public class RockPaperScissorsController {
     public ResponseEntity registerPlayer(@PathVariable("playerName") String playerName) {
         try {
             playerService.createPlayer(playerName);
-            return ResponseEntity.ok().build();
+            return ResponseEntity.ok().body("");
         } catch (RPSException e) {
-            return ResponseEntity.badRequest().build();
+            return ResponseEntity.badRequest().body(e.getMessage());
         }
     }
 
     @PostMapping(value = "/createInvite/{playerName}", produces = "application/json")
-    public ResponseEntity<GameSession> createInvite(@PathVariable("playerName") String playerName) {
-        Player player = null;
+    public ResponseEntity createInvite(@PathVariable("playerName") String playerName) {
         try {
-            player = playerService.getPlayer(playerName);
+            Player player = playerService.getPlayer(playerName);
+            GameSession session = gameSessionService.createSessionFrom(new Invite(player));
+            return ResponseEntity.ok(session);
         } catch (RPSException e) {
-            e.printStackTrace();
+            return ResponseEntity.badRequest().body(e.getMessage());
         }
-        GameSession session = gameSessionService.createSessionFrom(new Invite(player));
-        return ResponseEntity.ok(session);
     }
 
     @PostMapping(value = "/acceptInvite/{inviteCode}/{playerName}", produces = "application/json")
-    public GameSession acceptInvite(@PathVariable("inviteCode") String inviteCode, @PathVariable("playerName") String playerName) throws InvalidOperationException {
+    public ResponseEntity acceptInvite(@PathVariable("inviteCode") String inviteCode, @PathVariable("playerName") String playerName) throws InvalidOperationException {
         Player player = null;
         try {
             player = playerService.getPlayer(playerName);
         } catch (RPSException e) {
-            e.printStackTrace();
+            ResponseEntity.badRequest().body(e.getMessage());
         }
-        return gameSessionService.acceptInvite(player, inviteCode);
+        return ResponseEntity.ok(gameSessionService.acceptInvite(player, inviteCode));
     }
 
     @GetMapping(value = "/getplayer/{playername}", produces = "application/json")
@@ -89,8 +88,8 @@ public class RockPaperScissorsController {
     }
 
     @GetMapping(value = "/actionType/{playerid}/{actionType}", produces = "application/json")
-    public ResponseEntity.BodyBuilder play(@PathVariable("playerid") long playerId, @PathVariable("actionType") ActionType actionType) {
-        return ResponseEntity.status(HttpStatus.NOT_IMPLEMENTED);
+    public ResponseEntity play(@PathVariable("playerid") long playerId, @PathVariable("actionType") ActionType actionType) {
+        return ResponseEntity.status(HttpStatus.NOT_IMPLEMENTED).body("");
     }
 
 }

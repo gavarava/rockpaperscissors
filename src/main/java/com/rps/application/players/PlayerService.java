@@ -8,18 +8,14 @@ import com.rps.infrastructure.repository.exceptions.NotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.text.MessageFormat;
-
 import static com.rps.domain.actors.Player.State.PLAYING;
 import static com.rps.domain.actors.Player.State.WAITING;
 
 @Service
 public class PlayerService {
 
-    private static final String PLAYER_DOES_NOT_EXIST = "Player {0} does not exist";
-
     @Autowired
-    PlayersInMemoryRepository playersInMemoryRepository;
+    private PlayersInMemoryRepository playersInMemoryRepository;
 
     public PlayerService(PlayersInMemoryRepository playersInMemoryRepository) {
         this.playersInMemoryRepository = playersInMemoryRepository;
@@ -56,25 +52,15 @@ public class PlayerService {
         }
     }
 
-    public void deletePlayer(String name) {
-        Player player = null;
+    public void deletePlayer(String name) throws RPSException {
         try {
-            player = playersInMemoryRepository.findByName(name);
-        } catch (NotFoundException e) {
-            e.printStackTrace();
-        }
-        if (player == null) {
-            new PlayerServiceResponse(null, String.format(PLAYER_DOES_NOT_EXIST, name));
-            return;
-        }
-        if (PLAYING.equals(player.getState())) {
-            throw new IllegalStateException("Cannot delete a Player in the middle of a game.");
-        }
-        try {
+            Player player = playersInMemoryRepository.findByName(name);
+            if (PLAYING.equals(player.getState())) {
+                throw new RPSException("Cannot delete a Player in the middle of a game");
+            }
             playersInMemoryRepository.delete(player);
         } catch (NotFoundException e) {
-            e.printStackTrace();
+            throw new RPSException(e.getMessage());
         }
-        new PlayerServiceResponse(MessageFormat.format("Player {0} was deleted successfully", name));
     }
 }

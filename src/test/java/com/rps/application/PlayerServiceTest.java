@@ -101,15 +101,18 @@ public class PlayerServiceTest {
         }
     }
 
-    @Test(expected = IllegalStateException.class)
-    public void shouldThrowExceptionWhenTryingToDeletePlayerWhenStateIsPlaying() throws RPSException {
-        String playerName = "PlayerPlayingAGame";
-        playerService.createPlayer(playerName);
-        Player player = playerService.getPlayer(playerName);
+    @Test
+    public void shouldGiveErrorWhenTryingToDeletePlayerInTheMiddleOfAGame() {
+        try {
+            String playerName = "PlayerPlayingAGame";
+            playerService.createPlayer(playerName);
 
-        playerService.changePlayerState(playerName, Player.State.READY);
-        playerService.changePlayerState(playerName, Player.State.PLAYING);
+            playerService.changePlayerState(playerName, Player.State.READY);
+            playerService.changePlayerState(playerName, Player.State.PLAYING);
 
-        playerService.deletePlayer(playerName);
+            playerService.deletePlayer(playerName);
+        } catch (RPSException e) {
+            assertThat(e.getMessage(), is("Cannot delete a Player in the middle of a game"));
+        }
     }
 }

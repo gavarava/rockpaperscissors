@@ -17,7 +17,7 @@ public class RPSTestsMother {
     MockMvc mockMvc;
 
     @Autowired
-    WebApplicationContext context;
+    private WebApplicationContext context;
 
     @Autowired
     PlayersInMemoryRepository playersInMemoryRepository;

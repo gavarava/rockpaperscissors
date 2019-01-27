@@ -24,7 +24,7 @@ public class RPSApplication_GameplayIT extends RPSTestsMother {
 
         // Given a registered player
         String playerAName = "PlayerA";
-        registerPlayerForTest(playerAName);
+        registerPlayerSuccessfullyUsingAPI(playerAName);
 
         // When the player asks to create an Invite
         MvcResult createInviteResult = this.mockMvc
@@ -46,31 +46,14 @@ public class RPSApplication_GameplayIT extends RPSTestsMother {
     public void secondPlayerShouldBeAbleToAcceptInviteFromFirstPlayer() throws Exception {
 
         // Given a registered player with an Invite Code
-        String firstPlayerName = "PlayerX";
-        String inviteCodeFromFirstPlayer = registerFirstPlayerAndCreateInvite(firstPlayerName);
+        String firstPlayerName = "PlayerXA";
+        registerPlayerSuccessfullyUsingAPI(firstPlayerName);
 
         // And another registered player
         String secondPlayerBName = "PlayerY";
-        registerPlayerForTest(secondPlayerBName);
+        registerPlayerSuccessfullyUsingAPI(secondPlayerBName);
 
-        // When the second player accepts the Invite from the First Player
-        MvcResult acceptInviteResult = this.mockMvc
-                .perform(post("/acceptInvite/" + inviteCodeFromFirstPlayer + "/" + secondPlayerBName)
-                        .contentType(MediaType.APPLICATION_JSON).content("")
-                        .accept(MediaType.APPLICATION_JSON))
-                .andExpect(status().isOk()).andReturn();
-
-        // Then the second player should get all the Game Session Details
-        assertNotNull(acceptInviteResult);
-        JSONObject acceptInviteResultObject = new JSONObject(acceptInviteResult.getResponse().getContentAsString());
-        JSONObject firstPlayer = (JSONObject) acceptInviteResultObject.get("firstPlayer");
-        assertThat(firstPlayer.get("name"), is(firstPlayerName));
-        JSONObject secondPlayer = (JSONObject) acceptInviteResultObject.get("secondPlayer");
-        assertThat(secondPlayer.get("name"), is(secondPlayerBName));
-    }
-
-    private String registerFirstPlayerAndCreateInvite(String firstPlayerName) throws Exception {
-        registerPlayerForTest(firstPlayerName);
+        // And First Player Creates an Invite
         MvcResult createInviteResult = this.mockMvc
                 .perform(post("/createInvite/" + firstPlayerName)
                         .contentType(MediaType.APPLICATION_JSON)
@@ -82,7 +65,29 @@ public class RPSApplication_GameplayIT extends RPSTestsMother {
         assertThat(inviteCode, matchesRegex("^[a-zA-Z0-9]+"));
         JSONObject firstPlayer = (JSONObject) createInviteResultObject.get("firstPlayer");
         assertThat(firstPlayer.get("name"), is(firstPlayerName));
-        return inviteCode;
+
+        // When the second player accepts the Invite from the First Player
+        MvcResult acceptInviteResult = this.mockMvc
+                .perform(post("/acceptInvite/" + inviteCode + "/" + secondPlayerBName)
+                        .contentType(MediaType.APPLICATION_JSON).content("")
+                        .accept(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk()).andReturn();
+
+        // Then the second player should get all the Game Session Details
+        assertNotNull(acceptInviteResult);
+        JSONObject acceptInviteResultObject = new JSONObject(acceptInviteResult.getResponse().getContentAsString());
+        JSONObject firstPlayerObject = (JSONObject) acceptInviteResultObject.get("firstPlayer");
+        assertThat(firstPlayerObject.get("name"), is(firstPlayerName));
+        JSONObject secondPlayerObject = (JSONObject) acceptInviteResultObject.get("secondPlayer");
+        assertThat(secondPlayerObject.get("name"), is(secondPlayerBName));
+    }
+
+    private void registerPlayerSuccessfullyUsingAPI(String playerName) throws Exception {
+        MvcResult mvcResult = this.mockMvc
+                .perform(post("/register/" + playerName)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .accept(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk()).andReturn();
     }
 
 }

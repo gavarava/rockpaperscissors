@@ -13,16 +13,17 @@ public class PlayersInMemoryRepository implements CrudRepository<Player, Long> {
     private Set<Player> players;
 
     public PlayersInMemoryRepository() {
-        if (players == null) {
             this.players = new HashSet<>();
-        }
     }
 
     @Override
     public void save(Player player) throws AlreadyExistsException {
-        boolean addedSucessfully = players.add(player);
-        if (!addedSucessfully) {
-            throw new AlreadyExistsException("Player with " + player.getName() + " already exists");
+        boolean foundPlayerWithSameName = players.stream()
+                .anyMatch(eachPlayerInSet -> eachPlayerInSet.getName().equals(player.getName()));
+        if (foundPlayerWithSameName) {
+            throw new AlreadyExistsException(player.getName() + " already exists");
+        } else {
+            players.add(player);
         }
     }
 
