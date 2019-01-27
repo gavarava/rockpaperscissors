@@ -60,5 +60,18 @@ public class Player {
 
     public enum State {
         WAITING, PLAYING, READY;
+
+        @Override
+        public String toString() {
+            switch (this) {
+                case READY:
+                    return "READY";
+                case PLAYING:
+                    return "PLAYING";
+                case WAITING:
+                    return "WAITING";
+            }
+            return "";
+        }
     }
 }

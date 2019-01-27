@@ -1,15 +1,13 @@
 package com.rps.infrastructure;
 
 import com.rps.application.GameSessionService;
+import com.rps.application.RPSException;
 import com.rps.application.players.PlayerService;
-import com.rps.application.players.PlayerServiceResponse;
 import com.rps.domain.actors.Player;
 import com.rps.domain.gameplay.ActionType;
 import com.rps.domain.gameplay.GameSession;
 import com.rps.domain.gameplay.InvalidOperationException;
 import com.rps.domain.gameplay.Invite;
-import com.rps.infrastructure.players.PlayerResponse;
-import com.rps.infrastructure.players.PlayerResponseTranslator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -38,33 +36,56 @@ public class RockPaperScissorsController {
     }
 
     @PostMapping(value = "/register/{playerName}", produces = "application/json")
-    public ResponseEntity<PlayerResponse> registerPlayer(@PathVariable("playerName") String playerName) {
-        PlayerServiceResponse playerServiceResponse = playerService.createPlayerWithName(playerName);
-        return ResponseEntity.ok(PlayerResponseTranslator.translate(playerServiceResponse));
+    public ResponseEntity registerPlayer(@PathVariable("playerName") String playerName) {
+        try {
+            playerService.createPlayer(playerName);
+            return ResponseEntity.ok().build();
+        } catch (RPSException e) {
+            return ResponseEntity.badRequest().build();
+        }
     }
 
     @PostMapping(value = "/createInvite/{playerName}", produces = "application/json")
-    public GameSession createInvite(@PathVariable("playerName") String playerName) {
-        PlayerServiceResponse response = playerService.getPlayer(playerName);
-        return gameSessionService.createSessionFrom(new Invite(response.getPlayer()));
+    public ResponseEntity<GameSession> createInvite(@PathVariable("playerName") String playerName) {
+        Player player = null;
+        try {
+            player = playerService.getPlayer(playerName);
+        } catch (RPSException e) {
+            e.printStackTrace();
+        }
+        GameSession session = gameSessionService.createSessionFrom(new Invite(player));
+        return ResponseEntity.ok(session);
     }
 
     @PostMapping(value = "/acceptInvite/{inviteCode}/{playerName}", produces = "application/json")
     public GameSession acceptInvite(@PathVariable("inviteCode") String inviteCode, @PathVariable("playerName") String playerName) throws InvalidOperationException {
-        PlayerServiceResponse response = playerService.getPlayer(playerName);
-        return gameSessionService.acceptInvite(response.getPlayer(), inviteCode);
+        Player player = null;
+        try {
+            player = playerService.getPlayer(playerName);
+        } catch (RPSException e) {
+            e.printStackTrace();
+        }
+        return gameSessionService.acceptInvite(player, inviteCode);
     }
 
     @GetMapping(value = "/getplayer/{playername}", produces = "application/json")
-    public ResponseEntity<PlayerResponse> getPlayer(@PathVariable("playername") String playerName) {
-        PlayerServiceResponse playerServiceResponse = playerService.getPlayer(playerName);
-        return ResponseEntity.ok(PlayerResponseTranslator.translate(playerServiceResponse));
+    public ResponseEntity getPlayer(@PathVariable("playername") String playerName) {
+        try {
+            Player player = playerService.getPlayer(playerName);
+            return ResponseEntity.ok(player);
+        } catch (RPSException e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
     }
 
-    @GetMapping(value = "/readyplayer/{playername}", produces = "application/json")
-    public ResponseEntity<PlayerResponse> ready(@PathVariable("playername") String playerName) {
-        PlayerServiceResponse playerServiceResponse = playerService.changePlayerState(playerName, Player.State.READY);
-        return ResponseEntity.ok(PlayerResponseTranslator.translate(playerServiceResponse));
+    @PostMapping(value = "/readyplayer/{playername}", produces = "application/json")
+    public ResponseEntity ready(@PathVariable("playername") String playerName) {
+        try {
+            Player player = playerService.changePlayerState(playerName, Player.State.READY);
+            return ResponseEntity.ok(player);
+        } catch (RPSException e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
     }
 
     @GetMapping(value = "/actionType/{playerid}/{actionType}", produces = "application/json")

@@ -1,12 +1,17 @@
 package com.rps.application.players;
 
+import com.rps.application.RPSException;
 import com.rps.domain.PlayersInMemoryRepository;
 import com.rps.domain.actors.Player;
 import com.rps.infrastructure.repository.exceptions.AlreadyExistsException;
+import com.rps.infrastructure.repository.exceptions.NotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.text.MessageFormat;
+
+import static com.rps.domain.actors.Player.State.PLAYING;
+import static com.rps.domain.actors.Player.State.WAITING;
 
 @Service
 public class PlayerService {
@@ -20,55 +25,56 @@ public class PlayerService {
         this.playersInMemoryRepository = playersInMemoryRepository;
     }
 
-    public PlayerServiceResponse createPlayerWithName(String name) {
-        Player existingPlayer = playersInMemoryRepository.findByName(name);
-        if (existingPlayer != null) {
-            return new PlayerServiceResponse(null, "Player with name " + name + " already exists");
-        }
-        return createNewPlayerAs(name);
-    }
-
-    private PlayerServiceResponse createNewPlayerAs(String name) {
+    public void createPlayer(String name) throws RPSException {
         try {
-            Player player = new Player(name);
-            playersInMemoryRepository.save(player);
-            return new PlayerServiceResponse(player, "Player Successfully Created");
+            playersInMemoryRepository.save(new Player(name));
         } catch (AlreadyExistsException e) {
-            return new PlayerServiceResponse(null, e.getMessage());
+            throw new RPSException(e.getMessage());
         }
     }
 
-    public PlayerServiceResponse getPlayer(String name) {
-        Player player = playersInMemoryRepository.findByName(name);
-        if (player == null) {
-            return new PlayerServiceResponse(null, String.format(PLAYER_DOES_NOT_EXIST, name));
+
+    public Player getPlayer(String name) throws RPSException {
+        try {
+            return playersInMemoryRepository.findByName(name);
+        } catch (NotFoundException e) {
+            throw new RPSException(e.getMessage());
         }
-        return new PlayerServiceResponse(player);
     }
 
-    public PlayerServiceResponse changePlayerState(String existingPlayerName, Player.State newState) {
-        Player player = playersInMemoryRepository.findByName(existingPlayerName);
-        if (player == null) {
-            return new PlayerServiceResponse(null, String.format(PLAYER_DOES_NOT_EXIST, existingPlayerName));
+    public Player changePlayerState(String existingPlayerName, Player.State newState) throws RPSException {
+        try {
+            Player player = playersInMemoryRepository.findByName(existingPlayerName);
+            Player.State currentStateOfPlayer = player.getState();
+            if (PLAYING.equals(newState) && WAITING.equals(currentStateOfPlayer)) {
+                throw new RPSException("Both players should be READY before starting PLAY");
+            }
+            player.changeStateTo(newState);
+            return player;
+        } catch (NotFoundException e) {
+            throw new RPSException(e.getMessage());
         }
-        Player.State currentStateOfPlayer = player.getState();
-        if (Player.State.PLAYING.equals(newState) && Player.State.WAITING.equals(currentStateOfPlayer)) {
-            return new PlayerServiceResponse("Players cannot start playing unless they are READY to play");
-        }
-        player.changeStateTo(newState);
-        return new PlayerServiceResponse(player);
     }
 
     public void deletePlayer(String name) {
-        Player player = playersInMemoryRepository.findByName(name);
+        Player player = null;
+        try {
+            player = playersInMemoryRepository.findByName(name);
+        } catch (NotFoundException e) {
+            e.printStackTrace();
+        }
         if (player == null) {
             new PlayerServiceResponse(null, String.format(PLAYER_DOES_NOT_EXIST, name));
             return;
         }
-        if (Player.State.PLAYING.equals(player.getState())) {
+        if (PLAYING.equals(player.getState())) {
             throw new IllegalStateException("Cannot delete a Player in the middle of a game.");
         }
-        playersInMemoryRepository.delete(player);
+        try {
+            playersInMemoryRepository.delete(player);
+        } catch (NotFoundException e) {
+            e.printStackTrace();
+        }
         new PlayerServiceResponse(MessageFormat.format("Player {0} was deleted successfully", name));
     }
 }

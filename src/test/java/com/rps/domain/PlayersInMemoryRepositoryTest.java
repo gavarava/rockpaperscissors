@@ -1,18 +1,16 @@
 package com.rps.domain;
 
-import static org.hamcrest.Matchers.greaterThan;
-import static org.hamcrest.Matchers.is;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertThat;
-import static org.junit.Assert.assertTrue;
-
 import com.rps.domain.actors.Player;
 import com.rps.infrastructure.repository.exceptions.AlreadyExistsException;
 import com.rps.infrastructure.repository.exceptions.NotFoundException;
-import java.util.Set;
 import org.junit.Before;
 import org.junit.Test;
+
+import java.util.Set;
+
+import static org.hamcrest.Matchers.greaterThan;
+import static org.hamcrest.Matchers.is;
+import static org.junit.Assert.*;
 
 public class PlayersInMemoryRepositoryTest {
 
@@ -46,8 +44,27 @@ public class PlayersInMemoryRepositoryTest {
     }
 
     @Test
-    public void shouldReturnNullWhenNotExists() {
+    public void shouldThrowExceptionWwhenPlayerNotFound() {
+        // TODO
         assertNull(playersInMemoryRepository.findOne(System.currentTimeMillis()));
+    }
+
+    @Test(expected = NotFoundException.class)
+    public void shouldThrowExceptionWhenPlayerNotFoundByName() throws NotFoundException {
+        playersInMemoryRepository.findByName("NonExistentPlayer");
+    }
+
+    @Test
+    public void shouldBeAbleToFindPlayerByName() throws AlreadyExistsException, NotFoundException {
+        // Given
+        Player player = new Player("PlayerName");
+        playersInMemoryRepository.save(player);
+
+        // When
+        Player searchedPlayer = playersInMemoryRepository.findByName("PlayerName");
+
+        // Then
+        assertThat(searchedPlayer, is(player));
     }
 
     @Test

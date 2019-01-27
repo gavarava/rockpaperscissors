@@ -26,13 +26,9 @@ public class PlayersInMemoryRepository implements CrudRepository<Player, Long> {
         }
     }
 
-    public Player findByName(String name) {
-        for (Player player : players) {
-            if (player.getName().equals(name)) {
-                return player;
-            }
-        }
-        return null;
+    public Player findByName(String name) throws NotFoundException {
+        return players.stream().filter(eachPlayer -> eachPlayer.getName().equals(name)).findFirst()
+                .orElseThrow(() -> new NotFoundException(name + " not found"));
     }
 
     @Override
@@ -56,7 +52,7 @@ public class PlayersInMemoryRepository implements CrudRepository<Player, Long> {
     }
 
     @Override
-    public void delete(Player player) {
+    public void delete(Player player) throws NotFoundException {
         long playerId = player.getId();
         if (!exists(playerId)) {
             throw new NotFoundException("Player with id " + playerId + " does not exist");
@@ -65,7 +61,7 @@ public class PlayersInMemoryRepository implements CrudRepository<Player, Long> {
     }
 
     @Override
-    public void deleteById(Long id) {
+    public void deleteById(Long id) throws NotFoundException {
         if (!exists(id)) {
             throw new NotFoundException("Player with id " + id + " does not exist");
         }

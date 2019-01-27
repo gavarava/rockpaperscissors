@@ -1,16 +1,14 @@
 package com.rps.application;
 
 import com.rps.application.players.PlayerService;
-import com.rps.application.players.PlayerServiceResponse;
 import com.rps.domain.PlayersInMemoryRepository;
 import com.rps.domain.actors.Player;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.*;
-import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.fail;
 
 public class PlayerServiceTest {
 
@@ -24,45 +22,35 @@ public class PlayerServiceTest {
 
     @Test
     public void shouldCreatePlayerWhenItDoesNotExist() {
-        PlayerServiceResponse playerServiceResponse = playerService.createPlayerWithName("SomePlayer");
-        assertNotNull(playerServiceResponse.getPlayer());
-        assertThat(playerServiceResponse.getMessage(), is("Player Successfully Created"));
+        try {
+            playerService.createPlayer("SomePlayer");
+            Player player = playerService.getPlayer("SomePlayer");
+            assertThat(player.getName(), is("SomePlayer"));
+        } catch (RPSException e) {
+            fail("Could not create player: " + e.getMessage());
+        }
     }
 
     @Test
-    @Ignore(value = "ToDo Fix Failure after cleanup")
-    public void shouldReturnPlayerDetailsWhenPlayerExists() {
+    public void shouldReturnPlayerDetailsWhenPlayerExists() throws RPSException {
         String testPlayerName = "TestPlayerName";
-        PlayerServiceResponse createPlayerServiceResponse = playerService.createPlayerWithName(testPlayerName);
-        PlayerServiceResponse getPlayerResult = playerService.getPlayer(testPlayerName);
-        assertThat(getPlayerResult.getMessage(), is("Found player TestPlayerName"));
-        Player player = getPlayerResult.getPlayer();
+        playerService.createPlayer(testPlayerName);
+        Player player = playerService.getPlayer(testPlayerName);
         assertThat(player, is(not(nullValue())));
-        assertThat(testPlayerName, is(player.getName()));
+        assertThat(player.getName(), is(testPlayerName));
+    }
+
+    @Test(expected = RPSException.class)
+    public void shouldThrowRPSExceptionWhenPlayerDoesNotExist() throws RPSException {
+        playerService.getPlayer("ThisPlayerDoesNotExist");
     }
 
     @Test
-    @Ignore(value = "ToDo Fix Failure after cleanup")
-    public void shouldReturnCorrectMessageWhenPlayerDoesNotExist() {
-        PlayerServiceResponse getPlayerResult = playerService.getPlayer("RandomPlayerName");
-        assertThat(getPlayerResult.getMessage(), is("The player RandomPlayerName does not exist!!"));
-        Player player = getPlayerResult.getPlayer();
-        assertThat(player, is(nullValue()));
-    }
-
-    @Test
-    public void shouldReturnAppropriateResponseWhenPlayerAlreadyExist() {
-        playerService.createPlayerWithName("SomePlayer");
-        PlayerServiceResponse playerServiceResponse = playerService.createPlayerWithName("SomePlayer");
-        assertThat(playerServiceResponse.getMessage(), is("Player with name SomePlayer already exists"));
-    }
-
-    @Test
-    public void shouldChangeStateOfPlayerWhenRequestedByTheSamePlayer() {
+    public void shouldChangeStateOfPlayer() throws RPSException {
+        // Given PlayerX
         String playerName = "PlayerX";
-        PlayerServiceResponse playerServiceResponse = playerService.createPlayerWithName(playerName);
-        assertThat(playerServiceResponse.getMessage(), is("Player Successfully Created"));
-        Player player = playerServiceResponse.getPlayer();
+        playerService.createPlayer(playerName);
+        Player player = playerService.getPlayer(playerName);
         assertThat(player.getState(), is(Player.State.WAITING));
         assertThat(player, is(not(nullValue())));
         assertThat(playerName, is(player.getName()));
@@ -70,58 +58,58 @@ public class PlayerServiceTest {
         Player.State newState = Player.State.READY;
         playerService.changePlayerState(playerName, newState);
 
-        PlayerServiceResponse getPlayerServiceResponse = playerService.getPlayer(playerName);
-        Player latestPlayerDetails = getPlayerServiceResponse.getPlayer();
-        assertThat(latestPlayerDetails.getState(), is(Player.State.READY));
+        Player updatedPlayerX = playerService.getPlayer(playerName);
+        assertThat(updatedPlayerX.getState(), is(Player.State.READY));
     }
 
     @Test
-    @Ignore(value = "ToDo Fix Failure after cleanup")
-    public void shouldReturnErrorMessageDuringChangePlayerStateWhenPlayerDoesNotExist() {
-        Player.State newState = Player.State.READY;
-        String playerName = "NonExistentPlayer";
-
-        playerService.changePlayerState(playerName, newState);
-
-        PlayerServiceResponse getPlayerServiceResponse = playerService.getPlayer(playerName);
-        assertThat(getPlayerServiceResponse.getPlayer(), is(nullValue()));
-        assertThat(getPlayerServiceResponse.getMessage(), is("The player NonExistentPlayer does not exist!!"));
+    public void shouldThrowRPSExceptionWhenPlayerNotFoundDuringChangeOfState() {
+        try {
+            Player.State newState = Player.State.READY;
+            String playerName = "NonExistentPlayer";
+            playerService.changePlayerState(playerName, newState);
+            Player player = playerService.getPlayer(playerName);
+            fail("RPSException not thrown");
+        } catch (RPSException e) {
+            assertThat(e.getMessage(), is("NonExistentPlayer not found"));
+        }
     }
 
     @Test
     public void shouldNotBeAbleToChangeStateFromWaitingToPlayingDirectly() {
-        String playerName = "PlayerPlayingAGame";
-        createPlayerWithName(playerName);
-
-        PlayerServiceResponse playerServiceResponse = playerService.changePlayerState(playerName, Player.State.PLAYING);
-        assertThat(playerServiceResponse
-                .getMessage(), is("Players cannot start playing unless they are READY to play"));
+        try {
+            String playerName = "PlayerPlayingAGame";
+            playerService.createPlayer(playerName);
+            playerService.changePlayerState(playerName, Player.State.PLAYING);
+        } catch (RPSException e) {
+            assertThat(e.getMessage(), is("Both players should be READY before starting PLAY"));
+        }
     }
 
     @Test
-    public void shouldDeletePlayerWhenRequested() {
+    public void shouldDeletePlayerWhenRequested() throws RPSException {
         String playerNameForTest = "PlayerForDeletion";
-        Player player = createPlayerWithName(playerNameForTest);
+        playerService.createPlayer(playerNameForTest);
+        Player player = playerService.getPlayer(playerNameForTest);
+
         playerService.deletePlayer(player.getName());
-        PlayerServiceResponse getPlayerResponse = playerService.getPlayer(playerNameForTest);
-        assertThat(getPlayerResponse.getPlayer(), is(nullValue()));
+        try {
+            Player deletedPlayer = playerService.getPlayer(playerNameForTest);
+            fail();
+        } catch (RPSException e) {
+            assertThat(e.getMessage(), is(playerNameForTest + " not found"));
+        }
     }
 
     @Test(expected = IllegalStateException.class)
-    public void shouldThrowExceptionWhenTryingToDeletePlayerWhenStateIsPlaying() {
+    public void shouldThrowExceptionWhenTryingToDeletePlayerWhenStateIsPlaying() throws RPSException {
         String playerName = "PlayerPlayingAGame";
-        createPlayerWithName(playerName);
+        playerService.createPlayer(playerName);
+        Player player = playerService.getPlayer(playerName);
 
         playerService.changePlayerState(playerName, Player.State.READY);
         playerService.changePlayerState(playerName, Player.State.PLAYING);
 
         playerService.deletePlayer(playerName);
     }
-
-    private Player createPlayerWithName(String playerName) {
-        PlayerServiceResponse playerServiceResponse = playerService.createPlayerWithName(playerName);
-        return playerServiceResponse.getPlayer();
-    }
-
-
 }
