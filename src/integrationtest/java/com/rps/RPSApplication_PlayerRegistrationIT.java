@@ -47,7 +47,7 @@ public class RPSApplication_PlayerRegistrationIT extends RPSTestsMother {
 
         //When getPlayer api is invoked
         MvcResult getPlayerResult = this.mockMvc
-                .perform(get("/getplayer/" + playerName)
+                .perform(get("/player/" + playerName)
                         .contentType(MediaType.APPLICATION_JSON)
                         .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk()).andReturn();
@@ -65,7 +65,7 @@ public class RPSApplication_PlayerRegistrationIT extends RPSTestsMother {
 
         // When we register another Player with same name
         MvcResult result = this.mockMvc
-                .perform(post("/register/" + playerName)
+                .perform(post("/player/" + playerName)
                         .contentType(MediaType.APPLICATION_JSON)
                         .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isBadRequest()).andReturn();
@@ -76,7 +76,7 @@ public class RPSApplication_PlayerRegistrationIT extends RPSTestsMother {
 
     private void registerPlayerSuccessfullyUsingAPI(String playerName) throws Exception {
         MvcResult mvcResult = this.mockMvc
-                .perform(post("/register/" + playerName)
+                .perform(post("/player/" + playerName)
                         .contentType(MediaType.APPLICATION_JSON)
                         .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk()).andReturn();
@@ -104,7 +104,7 @@ public class RPSApplication_PlayerRegistrationIT extends RPSTestsMother {
 
     private String getPlayerState(String playerName) throws Exception {
         MvcResult mvcResult = this.mockMvc
-                .perform(get("/getplayer/" + playerName)
+                .perform(get("/player/" + playerName)
                         .contentType(MediaType.APPLICATION_JSON)
                         .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk()).andReturn();

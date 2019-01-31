@@ -84,7 +84,7 @@ public class RPSApplication_GameplayIT extends RPSTestsMother {
 
     private void registerPlayerSuccessfullyUsingAPI(String playerName) throws Exception {
         MvcResult mvcResult = this.mockMvc
-                .perform(post("/register/" + playerName)
+                .perform(post("/player/" + playerName)
                         .contentType(MediaType.APPLICATION_JSON)
                         .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk()).andReturn();
