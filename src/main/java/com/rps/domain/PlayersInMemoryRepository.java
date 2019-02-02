@@ -13,7 +13,7 @@ public class PlayersInMemoryRepository implements CrudRepository<Player, Long> {
     private Set<Player> players;
 
     public PlayersInMemoryRepository() {
-            this.players = new HashSet<>();
+        this.players = new HashSet<>();
     }
 
     @Override

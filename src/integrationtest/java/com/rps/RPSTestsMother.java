@@ -15,12 +15,10 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 public class RPSTestsMother {
 
     MockMvc mockMvc;
-
-    @Autowired
-    private WebApplicationContext context;
-
     @Autowired
     PlayersInMemoryRepository playersInMemoryRepository;
+    @Autowired
+    private WebApplicationContext context;
 
     @Before
     public void setupMockMvc() {

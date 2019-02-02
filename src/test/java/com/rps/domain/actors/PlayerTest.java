@@ -1,14 +1,14 @@
 package com.rps.domain.actors;
 
-import static org.hamcrest.core.Is.is;
-import static org.junit.Assert.assertThat;
-
 import com.rps.domain.actors.Player.State;
 import org.junit.Test;
 
+import static org.hamcrest.core.Is.is;
+import static org.junit.Assert.assertThat;
+
 public class PlayerTest {
 
-    private Player  player;
+    private Player player;
 
     @Test(expected = IllegalArgumentException.class)
     public void playerCannotBeCreatedWithoutAName() {

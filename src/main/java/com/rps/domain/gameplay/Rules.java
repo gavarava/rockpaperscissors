@@ -8,10 +8,10 @@ public class Rules {
         } else if ((isRock(actionType1) && isPaper(actionType2)) || (isPaper(actionType1) && isRock(actionType2))) {
             return ActionType.PAPER;
         } else if ((isRock(actionType1) && isScissors(actionType2)) || (isScissors(actionType1) && isRock(
-            actionType2))) {
+                actionType2))) {
             return ActionType.ROCK;
         } else if ((isPaper(actionType1) && isScissors(actionType2)) || (isScissors(actionType1) && isPaper(
-            actionType2))) {
+                actionType2))) {
             return ActionType.SCISSORS;
         }
         return ActionType.TIE;
