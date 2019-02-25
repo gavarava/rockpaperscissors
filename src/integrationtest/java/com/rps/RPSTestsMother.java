@@ -13,7 +13,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 public class RPSTestsMother {
 
-    MockMvc mockMvc;
+    protected MockMvc mockMvc;
 
     @Autowired
     private WebApplicationContext context;
@@ -23,7 +23,7 @@ public class RPSTestsMother {
         mockMvc = MockMvcBuilders.webAppContextSetup(context).build();
     }
 
-    void registerPlayerSuccessfullyUsingAPI(String playerName) throws Exception {
+    protected void registerPlayerSuccessfullyUsingAPI(String playerName) throws Exception {
         MvcResult mvcResult = this.mockMvc
                 .perform(post("/player/" + playerName)
                         .contentType(MediaType.APPLICATION_JSON)
