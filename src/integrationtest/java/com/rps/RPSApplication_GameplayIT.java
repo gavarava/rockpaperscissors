@@ -82,12 +82,4 @@ public class RPSApplication_GameplayIT extends RPSTestsMother {
         assertThat(secondPlayerObject.get("name"), is(secondPlayerBName));
     }
 
-    private void registerPlayerSuccessfullyUsingAPI(String playerName) throws Exception {
-        MvcResult mvcResult = this.mockMvc
-                .perform(post("/player/" + playerName)
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .accept(MediaType.APPLICATION_JSON))
-                .andExpect(status().isOk()).andReturn();
-    }
-
 }

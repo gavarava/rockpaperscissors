@@ -74,14 +74,6 @@ public class RPSApplication_PlayerRegistrationIT extends RPSTestsMother {
         assertThat(result.getResponse().getContentAsString(), is("PlayerOneB already exists"));
     }
 
-    private void registerPlayerSuccessfullyUsingAPI(String playerName) throws Exception {
-        MvcResult mvcResult = this.mockMvc
-                .perform(post("/player/" + playerName)
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .accept(MediaType.APPLICATION_JSON))
-                .andExpect(status().isOk()).andReturn();
-    }
-
     @Test
     public void thatRegisteringThreePlayersKeepsEveryoneWaiting() throws Exception {
         String player1 = "PlayerX1";
