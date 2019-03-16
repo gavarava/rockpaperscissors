@@ -58,9 +58,9 @@ public class RockPaperScissorsController {
     }
 
     @PostMapping(value = "/createInvite/{playerName}", produces = "application/json")
-    public ResponseEntity createInvite(@PathVariable("playerName") String playerName) {
+    public ResponseEntity createInvite(@PathVariable("playerName") String inviter) {
         try {
-            Player player = playerService.getPlayer(playerName);
+            Player player = playerService.getPlayer(inviter);
             GameSession session = gameSessionService.createSessionFrom(new Invite(player));
             return ResponseEntity.ok(session);
         } catch (RPSException e) {
