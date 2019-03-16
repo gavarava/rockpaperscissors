@@ -9,12 +9,14 @@ import com.rps.domain.gameplay.GameSession;
 import com.rps.domain.gameplay.InvalidOperationException;
 import com.rps.domain.gameplay.Invite;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
+
+import static org.springframework.http.HttpMethod.GET;
+import static org.springframework.http.HttpMethod.POST;
 
 @RestController
 public class RockPaperScissorsController {
@@ -36,14 +38,14 @@ public class RockPaperScissorsController {
     @RequestMapping(value = "/player/{playerName}", produces = "application/json", method = {RequestMethod.GET, RequestMethod.POST})
     public ResponseEntity player(@PathVariable("playerName") String playerName) {
         try {
-            if (context.getMethod().equals("GET")) {
+            if (GET.name().equals(context.getMethod())) {
                 Player player = playerService.getPlayer(playerName);
                 return ResponseEntity.ok(player);
-            } else if (context.getMethod().equals("POST")) {
+            } else if (POST.name().equals(context.getMethod())) {
                 playerService.createPlayer(playerName);
                 return ResponseEntity.ok().body("");
             } else {
-                return ResponseEntity.badRequest().allow(HttpMethod.GET, HttpMethod.POST).body("");
+                return ResponseEntity.badRequest().allow(GET, POST).body("");
             }
         } catch (RPSException e) {
             return ResponseEntity.badRequest().body(e.getMessage());
@@ -56,9 +58,9 @@ public class RockPaperScissorsController {
     }
 
     @PostMapping(value = "/createInvite/{playerName}", produces = "application/json")
-    public ResponseEntity createInvite(@PathVariable("playerName") String playerName) {
+    public ResponseEntity createInvite(@PathVariable("playerName") String inviter) {
         try {
-            Player player = playerService.getPlayer(playerName);
+            Player player = playerService.getPlayer(inviter);
             GameSession session = gameSessionService.createSessionFrom(new Invite(player));
             return ResponseEntity.ok(session);
         } catch (RPSException e) {
