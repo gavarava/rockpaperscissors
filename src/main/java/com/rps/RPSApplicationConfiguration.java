@@ -7,9 +7,9 @@ import org.springframework.context.annotation.Configuration;
 @Configuration
 public class RPSApplicationConfiguration {
 
-    @Bean
-    public PlayersInMemoryRepository playersInMemoryRepository() {
-        return new PlayersInMemoryRepository();
-    }
+  @Bean
+  public PlayersInMemoryRepository playersInMemoryRepository() {
+    return new PlayersInMemoryRepository();
+  }
 
 }

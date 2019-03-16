@@ -4,49 +4,49 @@ import com.rps.domain.actors.Player;
 
 public class GameSession {
 
-    private long sessionId;
-    private String inviteCode;
-    private Player firstPlayer;
-    private Player secondPlayer;
-    private State state;
+  private long sessionId;
+  private String inviteCode;
+  private Player firstPlayer;
+  private Player secondPlayer;
+  private State state;
 
 
-    public GameSession(Invite invite) {
-        this.sessionId = System.currentTimeMillis() + invite.hashCode();
-        this.inviteCode = invite.getCode();
-        this.firstPlayer = invite.getPlayer();
-        this.state = State.WAITING;
-    }
+  public GameSession(Invite invite) {
+    this.sessionId = System.currentTimeMillis() + invite.hashCode();
+    this.inviteCode = invite.getCode();
+    this.firstPlayer = invite.getPlayer();
+    this.state = State.WAITING;
+  }
 
-    public State state() {
-        return this.state;
-    }
+  public State state() {
+    return this.state;
+  }
 
-    public String getInviteCode() {
-        return this.inviteCode;
-    }
+  public String getInviteCode() {
+    return this.inviteCode;
+  }
 
-    public long getId() {
-        return this.sessionId;
-    }
+  public long getId() {
+    return this.sessionId;
+  }
 
-    public void changeStateTo(State state) {
-        this.state = state;
-    }
+  public void changeStateTo(State state) {
+    this.state = state;
+  }
 
-    public Player getFirstPlayer() {
-        return this.firstPlayer;
-    }
+  public Player getFirstPlayer() {
+    return this.firstPlayer;
+  }
 
-    public Player getSecondPlayer() {
-        return this.secondPlayer;
-    }
+  public Player getSecondPlayer() {
+    return this.secondPlayer;
+  }
 
-    public void addOpponent(Player player) {
-        this.secondPlayer = player;
-    }
+  public void addOpponent(Player player) {
+    this.secondPlayer = player;
+  }
 
-    public enum State {
-        WAITING, ACCEPTED
-    }
+  public enum State {
+    WAITING, ACCEPTED
+  }
 }

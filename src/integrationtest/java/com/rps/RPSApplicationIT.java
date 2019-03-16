@@ -1,5 +1,12 @@
 package com.rps;
 
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertThat;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+
 import com.rps.domain.PlayersInMemoryRepository;
 import org.hamcrest.Matchers;
 import org.junit.Before;
@@ -12,13 +19,6 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
 
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertThat;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
-
 /**
  * Integration testing the actual API Check the guide here: https://spring.io/guides/gs/testing-web/
  */
@@ -26,31 +26,31 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @SpringBootTest
 public class RPSApplicationIT {
 
-    @Autowired
-    private WebApplicationContext context;
+  @Autowired
+  private WebApplicationContext context;
 
-    @Autowired
-    private PlayersInMemoryRepository playersInMemoryRepository;
+  @Autowired
+  private PlayersInMemoryRepository playersInMemoryRepository;
 
-    private MockMvc mockMvc;
+  private MockMvc mockMvc;
 
-    @Before
-    public void setupMockMvc() {
-        mockMvc = MockMvcBuilders.webAppContextSetup(context).build();
-    }
+  @Before
+  public void setupMockMvc() {
+    mockMvc = MockMvcBuilders.webAppContextSetup(context).build();
+  }
 
-    @Test
-    public void checkWhetherWebApplicationContextAndTheRepositoryLoadsSuccessfully() {
-        assertNotNull(playersInMemoryRepository);
-        assertThat(playersInMemoryRepository.count(), Matchers.greaterThanOrEqualTo(0));
-    }
+  @Test
+  public void checkWhetherWebApplicationContextAndTheRepositoryLoadsSuccessfully() {
+    assertNotNull(playersInMemoryRepository);
+    assertThat(playersInMemoryRepository.count(), Matchers.greaterThanOrEqualTo(0));
+  }
 
-    @Test
-    public void shouldReturnPingResultAsPongAlongWithPlayersReadyAndStateTest() throws Exception {
-        this.mockMvc.perform(get("/ping"))
-                .andDo(print())
-                .andExpect(status().isOk())
-                .andExpect(content().json("{\"reply\":\"pong\",\"state\":\"TEST\",\"playersReady\":0}"));
-    }
+  @Test
+  public void shouldReturnPingResultAsPongAlongWithPlayersReadyAndStateTest() throws Exception {
+    this.mockMvc.perform(get("/ping"))
+        .andDo(print())
+        .andExpect(status().isOk())
+        .andExpect(content().json("{\"reply\":\"pong\",\"state\":\"TEST\",\"playersReady\":0}"));
+  }
 
 }
