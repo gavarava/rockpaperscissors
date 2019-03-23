@@ -50,7 +50,7 @@ public class RPSApplicationIT {
     this.mockMvc.perform(get("/ping"))
         .andDo(print())
         .andExpect(status().isOk())
-        .andExpect(content().json("{\"reply\":\"pong\",\"state\":\"TEST\",\"playersReady\":0}"));
+        .andExpect(content().json("{\"response\":\"pong\"}"));
   }
 
 }

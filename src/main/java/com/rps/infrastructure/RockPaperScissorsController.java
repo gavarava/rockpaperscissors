@@ -1,8 +1,5 @@
 package com.rps.infrastructure;
 
-import static org.springframework.http.HttpMethod.GET;
-import static org.springframework.http.HttpMethod.POST;
-
 import com.rps.application.GameSessionService;
 import com.rps.application.RPSException;
 import com.rps.application.players.PlayerService;
@@ -18,8 +15,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
@@ -40,27 +35,29 @@ public class RockPaperScissorsController {
     this.gameSessionService = gameSessionService;
   }
 
-  @RequestMapping(value = "/player/{playerName}", produces = "application/json", method = {
-      RequestMethod.GET, RequestMethod.POST})
+  @GetMapping(value = "/ping", produces = "application/json")
+  public ResponseEntity<String> ping() {
+    return ResponseEntity.ok("{\"response\":\"pong\"}");
+  }
+
+  @GetMapping(value = "/player/{playerName}", produces = "application/json")
   public ResponseEntity player(@PathVariable("playerName") String playerName) {
     try {
-      if (GET.name().equals(context.getMethod())) {
-        Player player = playerService.getPlayer(playerName);
-        return ResponseEntity.ok(player);
-      } else if (POST.name().equals(context.getMethod())) {
-        playerService.createPlayer(playerName);
-        return ResponseEntity.ok().body("");
-      } else {
-        return ResponseEntity.badRequest().allow(GET, POST).body("");
-      }
+      Player player = playerService.getPlayer(playerName);
+      return ResponseEntity.ok(player);
     } catch (RPSException e) {
       return ResponseEntity.badRequest().body(e.getMessage());
     }
   }
 
-  @GetMapping(value = "/ping", produces = "application/json")
-  public DefaultResponse ping() {
-    return new DefaultResponse("pong", "TEST");
+  @PostMapping(value = "/player/{playerName}", produces = "application/json")
+  public ResponseEntity playerPOST(@PathVariable("playerName") String playerName) {
+    try {
+      playerService.createPlayer(playerName);
+      return ResponseEntity.ok().body("");
+    } catch (RPSException e) {
+      return ResponseEntity.badRequest().body(e.getMessage());
+    }
   }
 
   @PostMapping(value = "/createInvite/{playerName}", produces = "application/json")
