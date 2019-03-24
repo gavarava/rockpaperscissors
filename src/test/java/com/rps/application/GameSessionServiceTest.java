@@ -63,13 +63,13 @@ public class GameSessionServiceTest {
     assertNotNull("Invite code was not generated", invite.getCode());
     GameSession session = gameSessionService.createSessionFrom(invite);
     assertThat(session.state(), is(State.WAITING));
-    long sessionIdForPlayer1 = session.getId();
+    long sessionIdForPlayer1 = session.getSessionId();
 
     Player player2 = new Player("Player2");
     GameSession gameSessionForPlayer2 = gameSessionService.acceptInvite(player2, invite.getCode());
 
     assertThat(session.state(), is(ACCEPTED));
-    assertThat(gameSessionForPlayer2.getId(), is(equalTo(sessionIdForPlayer1)));
+    assertThat(gameSessionForPlayer2.getSessionId(), is(equalTo(sessionIdForPlayer1)));
     assertThat(session.getFirstPlayer(), is(player1));
     assertThat(session.getSecondPlayer(), is(player2));
   }

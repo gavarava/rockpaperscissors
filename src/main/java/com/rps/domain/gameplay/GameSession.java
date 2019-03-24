@@ -26,7 +26,7 @@ public class GameSession {
     return this.inviteCode;
   }
 
-  public long getId() {
+  public long getSessionId() {
     return this.sessionId;
   }
 
@@ -40,6 +40,10 @@ public class GameSession {
 
   public Player getSecondPlayer() {
     return this.secondPlayer;
+  }
+
+  public State getState() {
+    return state;
   }
 
   public void addOpponent(Player player) {

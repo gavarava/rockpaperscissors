@@ -1,10 +1,12 @@
 package com.rps;
 
 import static com.rps.domain.actors.Player.State.WAITING;
+import static org.hamcrest.Matchers.containsString;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.MatchesRegex.matchesRegex;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.fail;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -28,14 +30,37 @@ public class RPSApplication_PlayerRegistrationIT extends RPSTestsMother {
   public void shouldAddPlayerSuccessfullyUsingAPI() {
     // Given a playerName
     String playerName = "PlayerOne";
-
     try {
       // When its is registered
       registerPlayerSuccessfullyUsingAPI(playerName);
-
       // Then it should not fail
     } catch (Exception e) {
       fail("Registration of Player failed");
+    }
+  }
+
+  @Test
+  public void shouldBeAbleToDeletePlayers() {
+    try {
+      // Given a registered Player
+      String playerName = "PlayerNew";
+      registerPlayerSuccessfullyUsingAPI(playerName);
+      // When it is deleted
+      MvcResult deletePlayerResult = this.mockMvc
+          .perform(delete("/player/" + playerName)
+              .contentType(MediaType.APPLICATION_JSON)
+              .accept(MediaType.APPLICATION_JSON))
+          .andExpect(status().isOk()).andReturn();
+      // Then it should fail when we fetch after deletion
+      MvcResult getPlayerResult = this.mockMvc
+          .perform(get("/player/" + playerName)
+              .contentType(MediaType.APPLICATION_JSON)
+              .accept(MediaType.APPLICATION_JSON))
+          .andExpect(status().isBadRequest()).andReturn();
+      String getPlayerResponse = getPlayerResult.getResponse().getContentAsString();
+      assertThat(getPlayerResponse, containsString("PlayerNew not found"));
+    } catch (Exception e) {
+      fail("Deletion of Player failed");
     }
   }
 

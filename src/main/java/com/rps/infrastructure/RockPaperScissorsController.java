@@ -4,7 +4,6 @@ import com.rps.application.GameSessionService;
 import com.rps.application.RPSException;
 import com.rps.application.players.PlayerService;
 import com.rps.domain.actors.Player;
-import com.rps.domain.gameplay.ActionType;
 import com.rps.domain.gameplay.GameSession;
 import com.rps.domain.gameplay.InvalidOperationException;
 import com.rps.domain.gameplay.Invite;
@@ -12,6 +11,7 @@ import javax.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -60,6 +60,17 @@ public class RockPaperScissorsController {
     }
   }
 
+
+  @DeleteMapping(value = "/player/{playerName}", produces = "application/json")
+  public ResponseEntity playerDELETE(@PathVariable("playerName") String playerName) {
+    try {
+      playerService.deletePlayer(playerName);
+      return ResponseEntity.ok("");
+    } catch (RPSException e) {
+      return ResponseEntity.badRequest().body(e.getMessage());
+    }
+  }
+
   @PostMapping(value = "/createInvite/{playerName}", produces = "application/json")
   public ResponseEntity createInvite(@PathVariable("playerName") String inviter) {
     try {
@@ -74,13 +85,17 @@ public class RockPaperScissorsController {
   @PostMapping(value = "/acceptInvite/{inviteCode}/{playerName}", produces = "application/json")
   public ResponseEntity acceptInvite(@PathVariable("inviteCode") String inviteCode,
       @PathVariable("playerName") String playerName) throws InvalidOperationException {
-    Player player = null;
     try {
-      player = playerService.getPlayer(playerName);
+      Player player = playerService.getPlayer(playerName);
+      return ResponseEntity.ok(gameSessionService.acceptInvite(player, inviteCode));
     } catch (RPSException e) {
-      ResponseEntity.badRequest().body(e.getMessage());
+      return ResponseEntity.badRequest().body(e.getMessage());
     }
-    return ResponseEntity.ok(gameSessionService.acceptInvite(player, inviteCode));
+  }
+
+  @GetMapping(value = "/session/{inviteCode}", produces = "application/json")
+  public ResponseEntity session(@PathVariable("inviteCode") String inviteCode) {
+    return ResponseEntity.ok(gameSessionService.sessions().get(inviteCode));
   }
 
   @PostMapping(value = "/readyplayer/{playername}", produces = "application/json")
@@ -93,9 +108,9 @@ public class RockPaperScissorsController {
     }
   }
 
-  @GetMapping(value = "/actionType/{playerid}/{actionType}", produces = "application/json")
-  public ResponseEntity play(@PathVariable("playerid") long playerId,
-      @PathVariable("actionType") ActionType actionType) {
+  @PostMapping(value = "/{playername}/plays/{action}", produces = "application/json")
+  public ResponseEntity play(@PathVariable("playername") String playername,
+      @PathVariable("action") String action) {
     return ResponseEntity.status(HttpStatus.NOT_IMPLEMENTED).body("");
   }
 
