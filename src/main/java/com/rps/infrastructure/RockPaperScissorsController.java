@@ -4,6 +4,7 @@ import com.rps.application.GameSessionService;
 import com.rps.application.RPSException;
 import com.rps.application.players.PlayerService;
 import com.rps.domain.actors.Player;
+import com.rps.domain.actors.Player.State;
 import com.rps.domain.gameplay.GameSession;
 import com.rps.domain.gameplay.InvalidOperationException;
 import com.rps.domain.gameplay.Invite;
@@ -15,6 +16,7 @@ import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
@@ -108,9 +110,16 @@ public class RockPaperScissorsController {
     }
   }
 
-  @PostMapping(value = "/{playername}/plays/{action}", produces = "application/json")
-  public ResponseEntity play(@PathVariable("playername") String playername,
-      @PathVariable("action") String action) {
+  @PostMapping(value = "/play", produces = "application/json")
+  public ResponseEntity play(@RequestBody Action action) {
+    try {
+      Player player = playerService.changePlayerState(action.getPlayerName(), State.PLAYING);
+      GameSession currentSession = gameSessionService.sessions().get(action.getInviteCode());
+      currentSession.changeStateTo(GameSession.State.PLAYING);
+      return ResponseEntity.ok().body("");
+    } catch (RPSException e) {
+      e.printStackTrace();
+    }
     return ResponseEntity.status(HttpStatus.NOT_IMPLEMENTED).body("");
   }
 

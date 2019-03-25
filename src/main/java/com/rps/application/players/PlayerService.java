@@ -29,7 +29,6 @@ public class PlayerService {
     }
   }
 
-
   public Player getPlayer(String name) throws RPSException {
     try {
       return playersInMemoryRepository.findByName(name);

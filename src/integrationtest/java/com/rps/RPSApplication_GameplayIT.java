@@ -10,8 +10,10 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
+import com.rps.infrastructure.Action;
 import org.json.JSONObject;
 import org.junit.After;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -29,6 +31,7 @@ public class RPSApplication_GameplayIT extends IntegrationTestsBase {
     }
   }
 
+  @Ignore("WIP")
   @Test
   public void testPlayRockPaperScissors() throws Exception {
     // Create Player 1
@@ -63,22 +66,33 @@ public class RPSApplication_GameplayIT extends IntegrationTestsBase {
     assertThat(sessionWithBothPlayersReady.get("secondPlayer").toString(), containsString(playerA));
     System.out.println(sessionWithBothPlayersReady);
 
-    // Player 1 Plays Rock - State Playing
-    play(playerA, "ROCK");
+    // PlayerA Plays Rock
+    play(new Action(playerA, inviteCode));
     // Player 2 - Check Session for Gameplay
     JSONObject sessionDuringGameplay = new JSONObject(getSessionFromInviteCode(inviteCode));
-    assertThat(sessionDuringGameplay.toString(), containsString("  PLAYING"));
-    play(playerB, "SCISSORS");
-    // Check Session for Gameplay - Player 1 WINNER
+    assertThat(sessionDuringGameplay.toString(), containsString("PLAYING"));
+    // PlayerB plays Scissors
+    play(new Action(playerB, inviteCode));
+    // Check Session for Gameplay - PlayerA is the winner
+    JSONObject sessionAfterPlayerBHasMadeAMove = new JSONObject(
+        getSessionFromInviteCode(inviteCode));
+    assertThat(sessionAfterPlayerBHasMadeAMove.toString(), containsString("DONE"));
+    assertThat(sessionAfterPlayerBHasMadeAMove.toString(), containsString("\"winner:\":PlayerA\""));
+    // Both the players will be WAITING after the winner is declared
+    assertThat(getPlayer(playerA), containsString("\"state\":\"WAITING\""));
+    assertThat(getPlayer(playerB), containsString("\"state\":\"WAITING\""));
   }
 
-  private String play(String playerA, String action) throws Exception {
+  private String play(Action action) throws Exception {
     String result = this.mockMvc
-        .perform(post(playerA + "/plays/" + action)
-            .contentType(MediaType.APPLICATION_JSON).content("")
+        .perform(post("/play")
+            .contentType(MediaType.APPLICATION_JSON)
+            .content("{\"playerName\":\"" + action.getPlayerName() + "\",\"inviteCode\":\"" + action
+                .getInviteCode() + "\"}")
             .accept(MediaType.APPLICATION_JSON))
         .andExpect(status().isOk()).andReturn().getResponse().getContentAsString();
-    assertThat(getPlayer(playerA), containsString("PLAYING"));
+    assertThat(action.getPlayerName() + " state was not changed to PLAYING",
+        getPlayer(action.getPlayerName()), containsString("\"state\":\"PLAYING\""));
     return result;
   }
 
@@ -97,5 +111,4 @@ public class RPSApplication_GameplayIT extends IntegrationTestsBase {
             .accept(MediaType.APPLICATION_JSON))
         .andExpect(status().isOk()).andReturn().getResponse().getContentAsString();
   }
-
 }

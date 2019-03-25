@@ -52,7 +52,11 @@ public class RPSApplication_PlayerRegistrationIT extends IntegrationTestsBase {
               .accept(MediaType.APPLICATION_JSON))
           .andExpect(status().isOk()).andReturn();
       // Then it should fail when we fetch after deletion
-      String getPlayerResponse = getPlayer(playerName);
+      String getPlayerResponse = this.mockMvc
+          .perform(get("/player/" + playerName)
+              .contentType(MediaType.APPLICATION_JSON)
+              .accept(MediaType.APPLICATION_JSON))
+          .andExpect(status().isBadRequest()).andReturn().getResponse().getContentAsString();
       assertThat(getPlayerResponse, containsString("PlayerNew not found"));
     } catch (Exception e) {
       fail("Deletion of Player failed");

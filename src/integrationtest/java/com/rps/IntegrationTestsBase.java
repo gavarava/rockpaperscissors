@@ -33,7 +33,7 @@ public class IntegrationTestsBase {
         .perform(get("/player/" + playerName)
             .contentType(MediaType.APPLICATION_JSON)
             .accept(MediaType.APPLICATION_JSON))
-        .andExpect(status().isBadRequest()).andReturn();
+        .andExpect(status().isOk()).andReturn();
     return getPlayerResult.getResponse().getContentAsString();
   }
 

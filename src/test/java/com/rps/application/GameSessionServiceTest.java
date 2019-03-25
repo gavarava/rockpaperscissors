@@ -89,5 +89,4 @@ public class GameSessionServiceTest {
       assertThat(e.getMessage(), is("A player cannot accept their own invite"));
     }
   }
-
 }

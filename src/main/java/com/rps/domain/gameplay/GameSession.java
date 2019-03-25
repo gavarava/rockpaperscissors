@@ -51,6 +51,6 @@ public class GameSession {
   }
 
   public enum State {
-    WAITING, ACCEPTED
+    WAITING, ACCEPTED, PLAYING
   }
 }
