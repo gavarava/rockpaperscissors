@@ -24,7 +24,7 @@ import org.springframework.test.web.servlet.MvcResult;
  */
 @RunWith(SpringJUnit4ClassRunner.class)
 @SpringBootTest
-public class RPSApplication_PlayerRegistrationIT extends RPSTestsMother {
+public class RPSApplication_PlayerRegistrationIT extends IntegrationTestsBase {
 
   @Test
   public void shouldAddPlayerSuccessfullyUsingAPI() {
@@ -52,12 +52,7 @@ public class RPSApplication_PlayerRegistrationIT extends RPSTestsMother {
               .accept(MediaType.APPLICATION_JSON))
           .andExpect(status().isOk()).andReturn();
       // Then it should fail when we fetch after deletion
-      MvcResult getPlayerResult = this.mockMvc
-          .perform(get("/player/" + playerName)
-              .contentType(MediaType.APPLICATION_JSON)
-              .accept(MediaType.APPLICATION_JSON))
-          .andExpect(status().isBadRequest()).andReturn();
-      String getPlayerResponse = getPlayerResult.getResponse().getContentAsString();
+      String getPlayerResponse = getPlayer(playerName);
       assertThat(getPlayerResponse, containsString("PlayerNew not found"));
     } catch (Exception e) {
       fail("Deletion of Player failed");

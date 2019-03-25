@@ -1,6 +1,7 @@
 package com.rps;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -14,7 +15,7 @@ import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
 
-public class RPSTestsMother {
+public class IntegrationTestsBase {
 
   protected MockMvc mockMvc;
   List<String> playersUsedInTest = new ArrayList<>(2);
@@ -27,7 +28,16 @@ public class RPSTestsMother {
     mockMvc = MockMvcBuilders.webAppContextSetup(context).build();
   }
 
-  protected void registerPlayerSuccessfullyUsingAPI(String playerName) throws Exception {
+  String getPlayer(String playerName) throws Exception {
+    MvcResult getPlayerResult = this.mockMvc
+        .perform(get("/player/" + playerName)
+            .contentType(MediaType.APPLICATION_JSON)
+            .accept(MediaType.APPLICATION_JSON))
+        .andExpect(status().isBadRequest()).andReturn();
+    return getPlayerResult.getResponse().getContentAsString();
+  }
+
+  void registerPlayerSuccessfullyUsingAPI(String playerName) throws Exception {
     MvcResult mvcResult = this.mockMvc
         .perform(post("/player/" + playerName)
             .contentType(MediaType.APPLICATION_JSON)
@@ -36,12 +46,28 @@ public class RPSTestsMother {
     playersUsedInTest.add(playerName);
   }
 
-  protected void deletePlayer(String playerName) throws Exception {
+  void deletePlayer(String playerName) throws Exception {
     MvcResult mvcResult = this.mockMvc
         .perform(delete("/player/" + playerName)
             .contentType(MediaType.APPLICATION_JSON)
             .accept(MediaType.APPLICATION_JSON))
         .andExpect(status().isOk()).andReturn();
+  }
+
+  String inviteCreatedBy(String firstPlayerName) throws Exception {
+    return this.mockMvc
+        .perform(post("/createInvite/" + firstPlayerName)
+            .contentType(MediaType.APPLICATION_JSON)
+            .accept(MediaType.APPLICATION_JSON))
+        .andExpect(status().isOk()).andReturn().getResponse().getContentAsString();
+  }
+
+  String acceptInvite(String invitee, String inviteCode) throws Exception {
+    return this.mockMvc
+        .perform(post("/acceptInvite/" + inviteCode + "/" + invitee)
+            .contentType(MediaType.APPLICATION_JSON).content("")
+            .accept(MediaType.APPLICATION_JSON))
+        .andExpect(status().isOk()).andReturn().getResponse().getContentAsString();
   }
 
 }
