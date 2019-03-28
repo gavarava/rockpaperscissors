@@ -1,6 +1,8 @@
 # Rock Paper Scissors           [![Build Status](https://travis-ci.org/gavarava/rockpaperscissors.svg?branch=master)](https://travis-ci.org/gavarava/rockpaperscissors)  [![SonarCloud Quality Gate](https://sonarcloud.io/api/project_badges/measure?project=gavarava_rockpaperscissors&metric=alert_status)](https://sonarcloud.io/dashboard?id=gavarava_rockpaperscissors)
-A simple Rock Paper Scissors REST Application using Spring Boot
-
+A Spring Boot Microservice for the game of Rock Paper Scissors
+###### About the game of Rock Paper Scissors
+* [Rock Paper Scissors - Wikipedia ](https://en.wikipedia.org/wiki/Rock%E2%80%93paper%E2%80%93scissors)
+* [Rock Paper Scissors - A Method for Competitive Game Play Design](http://www.gamasutra.com/view/feature/1733/rock_paper_scissors__a_method_for_.php)
 ## Getting Started
 These instructions will get you a copy of the project up and running on your local machine for development and testing purposes.
 
