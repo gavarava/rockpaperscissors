@@ -111,10 +111,10 @@ public class RockPaperScissorsController {
   }
 
   @PostMapping(value = "/play", produces = "application/json")
-  public ResponseEntity play(@RequestBody Action action) {
+  public ResponseEntity play(@RequestBody PlayRequest playRequest) {
     try {
-      Player player = playerService.changePlayerState(action.getPlayerName(), State.PLAYING);
-      GameSession currentSession = gameSessionService.sessions().get(action.getInviteCode());
+      Player player = playerService.changePlayerState(playRequest.getPlayerName(), State.PLAYING);
+      GameSession currentSession = gameSessionService.sessions().get(playRequest.getInviteCode());
       currentSession.changeStateTo(GameSession.State.PLAYING);
       return ResponseEntity.ok().body("");
     } catch (RPSException e) {

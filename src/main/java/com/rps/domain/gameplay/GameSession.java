@@ -1,6 +1,9 @@
 package com.rps.domain.gameplay;
 
 import com.rps.domain.actors.Player;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 
 public class GameSession {
 
@@ -9,6 +12,7 @@ public class GameSession {
   private Player firstPlayer;
   private Player secondPlayer;
   private State state;
+  private List<Round> rounds;
 
 
   public GameSession(Invite invite) {
@@ -16,6 +20,7 @@ public class GameSession {
     this.inviteCode = invite.getCode();
     this.firstPlayer = invite.getPlayer();
     this.state = State.WAITING;
+    this.rounds = new ArrayList<>(2);
   }
 
   public State state() {
@@ -48,6 +53,21 @@ public class GameSession {
 
   public void addOpponent(Player player) {
     this.secondPlayer = player;
+  }
+
+  public List<Round> rounds() {
+    return Collections.unmodifiableList(rounds);
+  }
+
+  public void addRound(Round round) {
+    rounds.add(round);
+  }
+
+  public Round latestRound() throws InvalidOperationException {
+    if (rounds.isEmpty()) {
+      throw new InvalidOperationException("No rounds have been started yet");
+    }
+    return rounds.get(rounds.size() - 1);
   }
 
   public enum State {

@@ -10,7 +10,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-import com.rps.infrastructure.Action;
+import com.rps.infrastructure.PlayRequest;
 import org.json.JSONObject;
 import org.junit.After;
 import org.junit.Ignore;
@@ -67,12 +67,12 @@ public class RPSApplication_GameplayIT extends IntegrationTestsBase {
     System.out.println(sessionWithBothPlayersReady);
 
     // PlayerA Plays Rock
-    play(new Action(playerA, inviteCode));
+    play(new PlayRequest(playerA, inviteCode));
     // Player 2 - Check Session for Gameplay
     JSONObject sessionDuringGameplay = new JSONObject(getSessionFromInviteCode(inviteCode));
     assertThat(sessionDuringGameplay.toString(), containsString("PLAYING"));
     // PlayerB plays Scissors
-    play(new Action(playerB, inviteCode));
+    play(new PlayRequest(playerB, inviteCode));
     // Check Session for Gameplay - PlayerA is the winner
     JSONObject sessionAfterPlayerBHasMadeAMove = new JSONObject(
         getSessionFromInviteCode(inviteCode));
@@ -83,16 +83,17 @@ public class RPSApplication_GameplayIT extends IntegrationTestsBase {
     assertThat(getPlayer(playerB), containsString("\"state\":\"WAITING\""));
   }
 
-  private String play(Action action) throws Exception {
+  private String play(PlayRequest playRequest) throws Exception {
     String result = this.mockMvc
         .perform(post("/play")
             .contentType(MediaType.APPLICATION_JSON)
-            .content("{\"playerName\":\"" + action.getPlayerName() + "\",\"inviteCode\":\"" + action
+            .content("{\"playerName\":\"" + playRequest.getPlayerName() + "\",\"inviteCode\":\""
+                + playRequest
                 .getInviteCode() + "\"}")
             .accept(MediaType.APPLICATION_JSON))
         .andExpect(status().isOk()).andReturn().getResponse().getContentAsString();
-    assertThat(action.getPlayerName() + " state was not changed to PLAYING",
-        getPlayer(action.getPlayerName()), containsString("\"state\":\"PLAYING\""));
+    assertThat(playRequest.getPlayerName() + " state was not changed to PLAYING",
+        getPlayer(playRequest.getPlayerName()), containsString("\"state\":\"PLAYING\""));
     return result;
   }
 

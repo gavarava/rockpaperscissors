@@ -1,15 +1,15 @@
 package com.rps.infrastructure;
 
-public class Action {
+public class PlayRequest {
 
   private String playerName;
   private String inviteCode;
 
   // for deserialisation
-  public Action() {
+  public PlayRequest() {
   }
 
-  public Action(String playerName, String inviteCode) {
+  public PlayRequest(String playerName, String inviteCode) {
     this.inviteCode = inviteCode;
     this.playerName = playerName;
   }
