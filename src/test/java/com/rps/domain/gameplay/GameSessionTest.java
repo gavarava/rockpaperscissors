@@ -5,6 +5,7 @@ import static org.junit.Assert.assertThat;
 import static org.junit.Assert.fail;
 
 import com.rps.domain.actors.Player;
+import com.rps.domain.gameplay.exceptions.InvalidOperationException;
 import org.junit.Test;
 
 public class GameSessionTest {

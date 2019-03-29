@@ -1,6 +1,7 @@
 package com.rps.domain.gameplay;
 
 import com.rps.domain.actors.Player;
+import com.rps.domain.gameplay.exceptions.InvalidOperationException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -20,7 +21,7 @@ public class GameSession {
     this.inviteCode = invite.getCode();
     this.firstPlayer = invite.getPlayer();
     this.state = State.WAITING;
-    this.rounds = new ArrayList<>(2);
+    this.rounds = new ArrayList<>(1);
   }
 
   public State state() {

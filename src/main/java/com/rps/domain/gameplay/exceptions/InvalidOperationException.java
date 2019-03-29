@@ -1,4 +1,4 @@
-package com.rps.domain.gameplay;
+package com.rps.domain.gameplay.exceptions;
 
 public class InvalidOperationException extends Exception {
 

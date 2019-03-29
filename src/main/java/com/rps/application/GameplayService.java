@@ -4,9 +4,9 @@ import static com.rps.domain.gameplay.Round.State.OVER;
 import static com.rps.domain.gameplay.Round.State.PLAYING;
 
 import com.rps.domain.gameplay.GameSession;
-import com.rps.domain.gameplay.InvalidOperationException;
 import com.rps.domain.gameplay.Round;
 import com.rps.domain.gameplay.Turn;
+import com.rps.domain.gameplay.exceptions.InvalidOperationException;
 
 public class GameplayService {
 

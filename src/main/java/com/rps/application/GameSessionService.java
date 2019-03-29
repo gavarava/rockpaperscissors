@@ -2,8 +2,8 @@ package com.rps.application;
 
 import com.rps.domain.actors.Player;
 import com.rps.domain.gameplay.GameSession;
-import com.rps.domain.gameplay.InvalidOperationException;
 import com.rps.domain.gameplay.Invite;
+import com.rps.domain.gameplay.exceptions.InvalidOperationException;
 import java.util.HashMap;
 import java.util.Map;
 import org.springframework.stereotype.Service;

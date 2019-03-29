@@ -11,8 +11,8 @@ import static org.junit.Assert.assertThat;
 
 import com.rps.domain.actors.Player;
 import com.rps.domain.gameplay.GameSession;
-import com.rps.domain.gameplay.InvalidOperationException;
 import com.rps.domain.gameplay.Invite;
+import com.rps.domain.gameplay.exceptions.InvalidOperationException;
 import org.junit.Test;
 
 public class GameSessionServiceTest {
