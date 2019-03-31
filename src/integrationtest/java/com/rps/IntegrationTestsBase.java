@@ -51,7 +51,7 @@ public class IntegrationTestsBase {
         .perform(delete("/player/" + playerName)
             .contentType(MediaType.APPLICATION_JSON)
             .accept(MediaType.APPLICATION_JSON))
-        .andExpect(status().isOk()).andReturn();
+        .andReturn();
   }
 
   String inviteCreatedBy(String firstPlayerName) throws Exception {

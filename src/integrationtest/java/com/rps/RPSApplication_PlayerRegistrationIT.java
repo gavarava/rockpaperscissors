@@ -12,6 +12,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import org.json.JSONObject;
+import org.junit.After;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -25,6 +26,14 @@ import org.springframework.test.web.servlet.MvcResult;
 @RunWith(SpringJUnit4ClassRunner.class)
 @SpringBootTest
 public class RPSApplication_PlayerRegistrationIT extends IntegrationTestsBase {
+
+
+  @After
+  public void tearDown() throws Exception {
+    for (String playerName : playersUsedInTest) {
+      deletePlayer(playerName);
+    }
+  }
 
   @Test
   public void shouldAddPlayerSuccessfullyUsingAPI() {
@@ -143,6 +152,6 @@ public class RPSApplication_PlayerRegistrationIT extends IntegrationTestsBase {
     String response = mvcResult.getResponse().getContentAsString();
     assertThat(response, matchesRegex(
         "^\\{\"id\":[0-9]+,\"name\":\"" +
-            "" + playerName + "\",\"state\":\"READY\",\"numberOfWins\":0,\"numberOfLosses\":0}$"));
+            "" + playerName + "\",\"state\":\"READY\"}$"));
   }
 }

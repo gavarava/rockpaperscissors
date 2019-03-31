@@ -14,6 +14,8 @@ public class GameSession {
   private Player secondPlayer;
   private State state;
   private List<Round> rounds;
+  private Player winner;
+  private boolean tie;
 
 
   public GameSession(Invite invite) {
@@ -70,6 +72,23 @@ public class GameSession {
     }
     return rounds.get(rounds.size() - 1);
   }
+
+  public void setWinner(Player winner) {
+    this.winner = winner;
+  }
+
+  public Player getWinner() {
+    return winner;
+  }
+
+  public boolean isTie() {
+    return tie;
+  }
+
+  public void setTie(boolean tie) {
+    this.tie = tie;
+  }
+
 
   public enum State {
     WAITING, ACCEPTED, PLAYING

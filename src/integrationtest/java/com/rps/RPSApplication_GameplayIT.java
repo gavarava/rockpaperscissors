@@ -13,7 +13,6 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import com.rps.infrastructure.PlayRequest;
 import org.json.JSONObject;
 import org.junit.After;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -31,14 +30,13 @@ public class RPSApplication_GameplayIT extends IntegrationTestsBase {
     }
   }
 
-  @Ignore("WIP")
   @Test
   public void testPlayRockPaperScissors() throws Exception {
     // Create Player 1
-    String playerA = "PlayerA";
+    String playerA = "PlayerK";
     registerPlayerSuccessfullyUsingAPI(playerA);
     // Create Player 2
-    String playerB = "PlayerB";
+    String playerB = "PlayerL";
     registerPlayerSuccessfullyUsingAPI(playerB);
     // Player 2 Creates Invite
     String createInviteResult = inviteCreatedBy(playerB);
@@ -64,23 +62,26 @@ public class RPSApplication_GameplayIT extends IntegrationTestsBase {
     assertThat(sessionWithBothPlayersReady.get("firstPlayer").toString(), containsString(playerB));
     assertThat(sessionWithBothPlayersReady.get("secondPlayer").toString(), containsString("READY"));
     assertThat(sessionWithBothPlayersReady.get("secondPlayer").toString(), containsString(playerA));
-    System.out.println(sessionWithBothPlayersReady);
 
     // PlayerA Plays Rock
-    play(new PlayRequest(playerA, inviteCode));
+    play(new PlayRequest(playerA, inviteCode, "ROCK"));
+    assertThat(playerA + " state was not changed to PLAYING",
+        getPlayer(playerA), containsString("\"state\":\"PLAYING\""));
     // Player 2 - Check Session for Gameplay
     JSONObject sessionDuringGameplay = new JSONObject(getSessionFromInviteCode(inviteCode));
     assertThat(sessionDuringGameplay.toString(), containsString("PLAYING"));
     // PlayerB plays Scissors
-    play(new PlayRequest(playerB, inviteCode));
+    play(new PlayRequest(playerB, inviteCode, "SCISSORS"));
+    assertThat(playerB + " state was not changed to WAITING",
+        getPlayer(playerB), containsString("\"state\":\"WAITING\""));
     // Check Session for Gameplay - PlayerA is the winner
     JSONObject sessionAfterPlayerBHasMadeAMove = new JSONObject(
         getSessionFromInviteCode(inviteCode));
-    assertThat(sessionAfterPlayerBHasMadeAMove.toString(), containsString("DONE"));
-    assertThat(sessionAfterPlayerBHasMadeAMove.toString(), containsString("\"winner:\":PlayerA\""));
+    assertThat(sessionAfterPlayerBHasMadeAMove.toString(), containsString("\"tie\":false,\"winner\":{\"name\":\"PlayerK\""));
     // Both the players will be WAITING after the winner is declared
     assertThat(getPlayer(playerA), containsString("\"state\":\"WAITING\""));
     assertThat(getPlayer(playerB), containsString("\"state\":\"WAITING\""));
+    System.out.println(new JSONObject(getSessionFromInviteCode(inviteCode)));
   }
 
   private String play(PlayRequest playRequest) throws Exception {
@@ -89,11 +90,9 @@ public class RPSApplication_GameplayIT extends IntegrationTestsBase {
             .contentType(MediaType.APPLICATION_JSON)
             .content("{\"playerName\":\"" + playRequest.getPlayerName() + "\",\"inviteCode\":\""
                 + playRequest
-                .getInviteCode() + "\"}")
+                .getInviteCode() + "\",\"move\":\"" + playRequest.getMove() + "\"}")
             .accept(MediaType.APPLICATION_JSON))
         .andExpect(status().isOk()).andReturn().getResponse().getContentAsString();
-    assertThat(playRequest.getPlayerName() + " state was not changed to PLAYING",
-        getPlayer(playRequest.getPlayerName()), containsString("\"state\":\"PLAYING\""));
     return result;
   }
 

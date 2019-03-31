@@ -6,8 +6,6 @@ public class Player {
   private long id;
   private String name;
   private State state;
-  private int numberOfWins;
-  private int numberOfLosses;
 
   public Player(String name) {
     if (name == null) {
@@ -24,22 +22,6 @@ public class Player {
 
   public String getName() {
     return name;
-  }
-
-  public int getNumberOfWins() {
-    return numberOfWins;
-  }
-
-  public void setNumberOfWins(int numberOfWins) {
-    this.numberOfWins = numberOfWins;
-  }
-
-  public int getNumberOfLosses() {
-    return numberOfLosses;
-  }
-
-  public void setNumberOfLosses(int numberOfLosses) {
-    this.numberOfLosses = numberOfLosses;
   }
 
   public State getState() {

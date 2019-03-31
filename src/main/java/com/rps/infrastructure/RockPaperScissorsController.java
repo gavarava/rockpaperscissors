@@ -1,12 +1,14 @@
 package com.rps.infrastructure;
 
 import com.rps.application.GameSessionService;
+import com.rps.application.GameplayService;
 import com.rps.application.RPSException;
 import com.rps.application.players.PlayerService;
 import com.rps.domain.actors.Player;
 import com.rps.domain.actors.Player.State;
 import com.rps.domain.gameplay.GameSession;
 import com.rps.domain.gameplay.Invite;
+import com.rps.domain.gameplay.Turn;
 import com.rps.domain.gameplay.exceptions.InvalidOperationException;
 import javax.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,6 +32,9 @@ public class RockPaperScissorsController {
 
   @Autowired
   private GameSessionService gameSessionService;
+
+  @Autowired
+  private GameplayService gameplayService;
 
   public RockPaperScissorsController(PlayerService playerService,
       GameSessionService gameSessionService) {
@@ -113,9 +118,7 @@ public class RockPaperScissorsController {
   @PostMapping(value = "/play", produces = "application/json")
   public ResponseEntity play(@RequestBody PlayRequest playRequest) {
     try {
-      Player player = playerService.changePlayerState(playRequest.getPlayerName(), State.PLAYING);
-      GameSession currentSession = gameSessionService.sessions().get(playRequest.getInviteCode());
-      currentSession.changeStateTo(GameSession.State.PLAYING);
+      gameplayService.play(playRequest);
       return ResponseEntity.ok().body("");
     } catch (RPSException e) {
       e.printStackTrace();

@@ -1,16 +1,16 @@
 package com.rps.domain.gameplay;
 
 import com.rps.domain.actors.Player;
-import java.awt.dnd.InvalidDnDOperationException;
+import com.rps.domain.gameplay.exceptions.InvalidOperationException;
 
 public class Turn {
 
   private Player player;
   private Move move;
 
-  public Turn(Player player, Move move) {
+  public Turn(Player player, Move move) throws InvalidOperationException {
     if (player == null || move == null) {
-      throw new InvalidDnDOperationException("A turn cannot be played without a Player & a Move");
+      throw new InvalidOperationException("A turn cannot be played without a Player & a Move");
     }
     this.player = player;
     this.move = move;
