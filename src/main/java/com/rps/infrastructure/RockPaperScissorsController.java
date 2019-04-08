@@ -5,12 +5,10 @@ import com.rps.application.GameplayService;
 import com.rps.application.RPSException;
 import com.rps.application.players.PlayerService;
 import com.rps.domain.actors.Player;
-import com.rps.domain.actors.Player.State;
 import com.rps.domain.gameplay.GameSession;
 import com.rps.domain.gameplay.Invite;
-import com.rps.domain.gameplay.Turn;
 import com.rps.domain.gameplay.exceptions.InvalidOperationException;
-import javax.servlet.http.HttpServletRequest;
+import java.net.URI;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -28,26 +26,12 @@ public class RockPaperScissorsController {
   private PlayerService playerService;
 
   @Autowired
-  private HttpServletRequest context;
-
-  @Autowired
   private GameSessionService gameSessionService;
 
   @Autowired
   private GameplayService gameplayService;
 
-  public RockPaperScissorsController(PlayerService playerService,
-      GameSessionService gameSessionService) {
-    this.playerService = playerService;
-    this.gameSessionService = gameSessionService;
-  }
-
-  @GetMapping(value = "/ping", produces = "application/json")
-  public ResponseEntity<String> ping() {
-    return ResponseEntity.ok("{\"response\":\"pong\"}");
-  }
-
-  @GetMapping(value = "/player/{playerName}", produces = "application/json")
+  @GetMapping(value = "/player/{playerName}")
   public ResponseEntity player(@PathVariable("playerName") String playerName) {
     try {
       Player player = playerService.getPlayer(playerName);
@@ -57,28 +41,29 @@ public class RockPaperScissorsController {
     }
   }
 
-  @PostMapping(value = "/player/{playerName}", produces = "application/json")
-  public ResponseEntity playerPOST(@PathVariable("playerName") String playerName) {
+  @PostMapping(value = "/player/{playerName}")
+  public ResponseEntity createPlayer(@PathVariable("playerName") String playerName) {
     try {
       playerService.createPlayer(playerName);
-      return ResponseEntity.ok().body("");
+      return ResponseEntity.created(URI.create("/player/" + playerName))
+          .body(playerService.getPlayer(playerName));
     } catch (RPSException e) {
       return ResponseEntity.badRequest().body(e.getMessage());
     }
   }
 
 
-  @DeleteMapping(value = "/player/{playerName}", produces = "application/json")
-  public ResponseEntity playerDELETE(@PathVariable("playerName") String playerName) {
+  @DeleteMapping(value = "/player/{playerName}")
+  public ResponseEntity deletePlayer(@PathVariable("playerName") String playerName) {
     try {
       playerService.deletePlayer(playerName);
-      return ResponseEntity.ok("");
+      return ResponseEntity.noContent().build();
     } catch (RPSException e) {
       return ResponseEntity.badRequest().body(e.getMessage());
     }
   }
 
-  @PostMapping(value = "/createInvite/{playerName}", produces = "application/json")
+  @PostMapping(value = "/createInvite/{playerName}")
   public ResponseEntity createInvite(@PathVariable("playerName") String inviter) {
     try {
       Player player = playerService.getPlayer(inviter);
@@ -89,7 +74,7 @@ public class RockPaperScissorsController {
     }
   }
 
-  @PostMapping(value = "/acceptInvite/{inviteCode}/{playerName}", produces = "application/json")
+  @PostMapping(value = "/acceptInvite/{inviteCode}/{playerName}")
   public ResponseEntity acceptInvite(@PathVariable("inviteCode") String inviteCode,
       @PathVariable("playerName") String playerName) throws InvalidOperationException {
     try {
@@ -100,12 +85,12 @@ public class RockPaperScissorsController {
     }
   }
 
-  @GetMapping(value = "/session/{inviteCode}", produces = "application/json")
+  @GetMapping(value = "/session/{inviteCode}")
   public ResponseEntity session(@PathVariable("inviteCode") String inviteCode) {
     return ResponseEntity.ok(gameSessionService.sessions().get(inviteCode));
   }
 
-  @PostMapping(value = "/readyplayer/{playername}", produces = "application/json")
+  @PostMapping(value = "/readyplayer/{playername}")
   public ResponseEntity ready(@PathVariable("playername") String playerName) {
     try {
       Player player = playerService.changePlayerState(playerName, Player.State.READY);
@@ -115,7 +100,7 @@ public class RockPaperScissorsController {
     }
   }
 
-  @PostMapping(value = "/play", produces = "application/json")
+  @PostMapping(value = "/play")
   public ResponseEntity play(@RequestBody PlayRequest playRequest) {
     try {
       gameplayService.play(playRequest);

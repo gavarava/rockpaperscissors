@@ -46,11 +46,11 @@ public class RPSApplicationIT {
   }
 
   @Test
-  public void shouldReturnPingResultAsPongAlongWithPlayersReadyAndStateTest() throws Exception {
-    this.mockMvc.perform(get("/ping"))
+  public void shouldReturnActuatorHealthResponse() throws Exception {
+    this.mockMvc.perform(get("/actuator/health"))
         .andDo(print())
         .andExpect(status().isOk())
-        .andExpect(content().json("{\"response\":\"pong\"}"));
+        .andExpect(content().json("{\"status\":\"UP\"}"));
   }
 
 }

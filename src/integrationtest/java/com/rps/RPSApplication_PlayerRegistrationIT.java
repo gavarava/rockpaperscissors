@@ -59,7 +59,7 @@ public class RPSApplication_PlayerRegistrationIT extends IntegrationTestsBase {
           .perform(delete("/player/" + playerName)
               .contentType(MediaType.APPLICATION_JSON)
               .accept(MediaType.APPLICATION_JSON))
-          .andExpect(status().isOk()).andReturn();
+          .andExpect(status().isNoContent()).andReturn();
       // Then it should fail when we fetch after deletion
       String getPlayerResponse = this.mockMvc
           .perform(get("/player/" + playerName)

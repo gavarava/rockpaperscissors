@@ -42,7 +42,7 @@ public class IntegrationTestsBase {
         .perform(post("/player/" + playerName)
             .contentType(MediaType.APPLICATION_JSON)
             .accept(MediaType.APPLICATION_JSON))
-        .andExpect(status().isOk()).andReturn();
+        .andExpect(status().isCreated()).andReturn();
     playersUsedInTest.add(playerName);
   }
 
