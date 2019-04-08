@@ -9,6 +9,9 @@ addons:
     organization: "gavarava-github"
     token: $SONAR_TOKEN
 
+git:
+  depth: false
+
 script:
   - ./gradlew --no-build-cache
   - sonar-scanner
