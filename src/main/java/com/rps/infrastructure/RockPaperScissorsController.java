@@ -1,5 +1,7 @@
 package com.rps.infrastructure;
 
+import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
+
 import com.rps.application.GameSessionService;
 import com.rps.application.GameplayService;
 import com.rps.application.RPSException;
@@ -10,7 +12,6 @@ import com.rps.domain.gameplay.Invite;
 import com.rps.domain.gameplay.exceptions.InvalidOperationException;
 import java.net.URI;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -31,84 +32,59 @@ public class RockPaperScissorsController {
   @Autowired
   private GameplayService gameplayService;
 
-  @GetMapping(value = "/player/{playerName}")
-  public ResponseEntity player(@PathVariable("playerName") String playerName) {
-    try {
-      Player player = playerService.getPlayer(playerName);
-      return ResponseEntity.ok(player);
-    } catch (RPSException e) {
-      return ResponseEntity.badRequest().body(e.getMessage());
-    }
+  @GetMapping(value = "/player/{playerName}", produces = APPLICATION_JSON_VALUE)
+  public ResponseEntity player(@PathVariable("playerName") String playerName) throws RPSException {
+    Player player = playerService.getPlayer(playerName);
+    return ResponseEntity.ok(player);
   }
 
-  @PostMapping(value = "/player/{playerName}")
-  public ResponseEntity createPlayer(@PathVariable("playerName") String playerName) {
-    try {
-      playerService.createPlayer(playerName);
-      return ResponseEntity.created(URI.create("/player/" + playerName))
-          .body(playerService.getPlayer(playerName));
-    } catch (RPSException e) {
-      return ResponseEntity.badRequest().body(e.getMessage());
-    }
+  @PostMapping(value = "/player/{playerName}", produces = APPLICATION_JSON_VALUE)
+  public ResponseEntity createPlayer(@PathVariable("playerName") String playerName)
+      throws RPSException {
+    playerService.createPlayer(playerName);
+    return ResponseEntity.created(URI.create("/player/" + playerName))
+        .body(playerService.getPlayer(playerName));
   }
 
 
-  @DeleteMapping(value = "/player/{playerName}")
-  public ResponseEntity deletePlayer(@PathVariable("playerName") String playerName) {
-    try {
-      playerService.deletePlayer(playerName);
-      return ResponseEntity.noContent().build();
-    } catch (RPSException e) {
-      return ResponseEntity.badRequest().body(e.getMessage());
-    }
+  @DeleteMapping(value = "/player/{playerName}", produces = APPLICATION_JSON_VALUE)
+  public ResponseEntity deletePlayer(@PathVariable("playerName") String playerName)
+      throws RPSException {
+    playerService.deletePlayer(playerName);
+    return ResponseEntity.noContent().build();
   }
 
-  @PostMapping(value = "/createInvite/{playerName}")
-  public ResponseEntity createInvite(@PathVariable("playerName") String inviter) {
-    try {
-      Player player = playerService.getPlayer(inviter);
-      GameSession session = gameSessionService.createSessionFrom(new Invite(player));
-      return ResponseEntity.ok(session);
-    } catch (RPSException e) {
-      return ResponseEntity.badRequest().body(e.getMessage());
-    }
+  @PostMapping(value = "/createInvite/{playerName}", produces = APPLICATION_JSON_VALUE)
+  public ResponseEntity createInvite(@PathVariable("playerName") String inviter)
+      throws RPSException {
+    Player player = playerService.getPlayer(inviter);
+    GameSession session = gameSessionService.createSessionFrom(new Invite(player));
+    return ResponseEntity.ok(session);
   }
 
-  @PostMapping(value = "/acceptInvite/{inviteCode}/{playerName}")
+  @PostMapping(value = "/acceptInvite/{inviteCode}/{playerName}", produces = APPLICATION_JSON_VALUE)
   public ResponseEntity acceptInvite(@PathVariable("inviteCode") String inviteCode,
-      @PathVariable("playerName") String playerName) throws InvalidOperationException {
-    try {
-      Player player = playerService.getPlayer(playerName);
-      return ResponseEntity.ok(gameSessionService.acceptInvite(player, inviteCode));
-    } catch (RPSException e) {
-      return ResponseEntity.badRequest().body(e.getMessage());
-    }
+      @PathVariable("playerName") String playerName)
+      throws InvalidOperationException, RPSException {
+    Player player = playerService.getPlayer(playerName);
+    return ResponseEntity.ok(gameSessionService.acceptInvite(player, inviteCode));
   }
 
-  @GetMapping(value = "/session/{inviteCode}")
+  @GetMapping(value = "/session/{inviteCode}", produces = APPLICATION_JSON_VALUE)
   public ResponseEntity session(@PathVariable("inviteCode") String inviteCode) {
     return ResponseEntity.ok(gameSessionService.sessions().get(inviteCode));
   }
 
-  @PostMapping(value = "/readyplayer/{playername}")
-  public ResponseEntity ready(@PathVariable("playername") String playerName) {
-    try {
-      Player player = playerService.changePlayerState(playerName, Player.State.READY);
-      return ResponseEntity.ok(player);
-    } catch (RPSException e) {
-      return ResponseEntity.badRequest().body(e.getMessage());
-    }
+  @PostMapping(value = "/readyplayer/{playername}", produces = APPLICATION_JSON_VALUE)
+  public ResponseEntity ready(@PathVariable("playername") String playerName) throws RPSException {
+    Player player = playerService.changePlayerState(playerName, Player.State.READY);
+    return ResponseEntity.ok(player);
   }
 
-  @PostMapping(value = "/play")
-  public ResponseEntity play(@RequestBody PlayRequest playRequest) {
-    try {
-      gameplayService.play(playRequest);
-      return ResponseEntity.ok().body("");
-    } catch (RPSException e) {
-      e.printStackTrace();
-    }
-    return ResponseEntity.status(HttpStatus.NOT_IMPLEMENTED).body("");
+  @PostMapping(value = "/play", produces = APPLICATION_JSON_VALUE)
+  public ResponseEntity play(@RequestBody PlayRequest playRequest) throws RPSException {
+    gameplayService.play(playRequest);
+    return ResponseEntity.ok().body("");
   }
 
 }

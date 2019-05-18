@@ -47,12 +47,12 @@ public class GameplayServiceTest {
       throws RPSException, InvalidOperationException {
     // Given a GameSession with Two Ready Players & Zero rounds & a PlayRequest
     GameSession gameSession = createGameSessionForTest();
-    playRequest = new PlayRequest(gameSession.getFirstPlayer().getName(),
-        gameSession.getInviteCode(),
-        "PAPER");
     Map<String, GameSession> gameSessionMap = new HashMap<>(1);
     gameSessionMap.put(gameSession.getInviteCode(), gameSession);
     when(gameSessionService.sessions()).thenReturn(gameSessionMap);
+    playRequest = new PlayRequest(gameSession.getFirstPlayer().getName(),
+        gameSession.getInviteCode(),
+        "PAPER");
     when(playerService.changePlayerState(gameSession.getFirstPlayer().getName(), State.PLAYING))
         .thenReturn(gameSession.getFirstPlayer());
     // When A turn is played on the GameSession for the first time
