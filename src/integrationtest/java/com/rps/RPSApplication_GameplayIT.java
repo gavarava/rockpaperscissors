@@ -31,6 +31,52 @@ public class RPSApplication_GameplayIT extends IntegrationTestsBase {
   }
 
   @Test
+  public void shouldReturnBadRequestWhenPlayCalledWithIncorrectData() throws Exception {
+    // Create Player 1
+    String playerA = "PlayerFF";
+    registerPlayerSuccessfullyUsingAPI(playerA);
+    // Create Player 2
+    String playerB = "PlayerOO";
+    registerPlayerSuccessfullyUsingAPI(playerB);
+    // Player 2 Creates Invite
+    String createInviteResult = inviteCreatedBy(playerB);
+    JSONObject inviteCodeResult = new JSONObject(createInviteResult);
+    String inviteCode = inviteCodeResult.get("inviteCode").toString();
+    assertNotNull(inviteCode);
+    String sessionId = inviteCodeResult.get("sessionId").toString();
+    assertNotNull(sessionId);
+    // Check Session using Invite Code
+    String currentSessionAsString = getSessionFromInviteCode(inviteCode);
+    assertEquals(createInviteResult, currentSessionAsString);
+    // Player 1 Accepts Invite
+    JSONObject acceptInviteResult = new JSONObject(acceptInvite(playerA, inviteCode));
+    // Chceck Session State ACCEPTED
+    assertThat(acceptInviteResult.get("state"), is(ACCEPTED.toString()));
+    readyPlayer(playerA);
+    readyPlayer(playerB);
+
+    // Check Session using Invite Code
+    JSONObject sessionWithBothPlayersReady = new JSONObject(getSessionFromInviteCode(inviteCode));
+    assertThat(sessionWithBothPlayersReady.get("firstPlayer").toString(), containsString("READY"));
+    // playerB is the first player since they created the Invite
+    assertThat(sessionWithBothPlayersReady.get("firstPlayer").toString(), containsString(playerB));
+    assertThat(sessionWithBothPlayersReady.get("secondPlayer").toString(), containsString("READY"));
+    assertThat(sessionWithBothPlayersReady.get("secondPlayer").toString(), containsString(playerA));
+
+    // PlayerA Plays Rock
+    PlayRequest playRequest = new PlayRequest("InvalidName", inviteCode, "ROCK");
+    String result = this.mockMvc
+        .perform(post("/play")
+            .contentType(MediaType.APPLICATION_JSON)
+            .content("{\"playerName\":\"" + playRequest.getPlayerName() + "\",\"inviteCode\":\""
+                + playRequest
+                .getInviteCode() + "\",\"move\":\"" + playRequest.getMove() + "\"}")
+            .accept(MediaType.APPLICATION_JSON))
+        .andExpect(status().isBadRequest()).andReturn().getResponse().getContentAsString();
+    assertThat(result, is("InvalidName not found"));
+  }
+
+  @Test
   public void testPlayRockPaperScissors() throws Exception {
     // Create Player 1
     String playerA = "PlayerK";
@@ -77,7 +123,8 @@ public class RPSApplication_GameplayIT extends IntegrationTestsBase {
     // Check Session for Gameplay - PlayerA is the winner
     JSONObject sessionAfterPlayerBHasMadeAMove = new JSONObject(
         getSessionFromInviteCode(inviteCode));
-    assertThat(sessionAfterPlayerBHasMadeAMove.toString(), containsString("\"tie\":false,\"winner\":{\"name\":\"PlayerK\""));
+    assertThat(sessionAfterPlayerBHasMadeAMove.toString(),
+        containsString("\"tie\":false,\"winner\":{\"name\":\"PlayerK\""));
     // Both the players will be WAITING after the winner is declared
     assertThat(getPlayer(playerA), containsString("\"state\":\"WAITING\""));
     assertThat(getPlayer(playerB), containsString("\"state\":\"WAITING\""));
@@ -85,7 +132,7 @@ public class RPSApplication_GameplayIT extends IntegrationTestsBase {
   }
 
   private String play(PlayRequest playRequest) throws Exception {
-    String result = this.mockMvc
+    return this.mockMvc
         .perform(post("/play")
             .contentType(MediaType.APPLICATION_JSON)
             .content("{\"playerName\":\"" + playRequest.getPlayerName() + "\",\"inviteCode\":\""
@@ -93,7 +140,6 @@ public class RPSApplication_GameplayIT extends IntegrationTestsBase {
                 .getInviteCode() + "\",\"move\":\"" + playRequest.getMove() + "\"}")
             .accept(MediaType.APPLICATION_JSON))
         .andExpect(status().isOk()).andReturn().getResponse().getContentAsString();
-    return result;
   }
 
   private String readyPlayer(String player) throws Exception {
