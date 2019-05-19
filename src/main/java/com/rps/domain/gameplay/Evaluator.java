@@ -8,14 +8,21 @@ import java.util.Optional;
 
 public class Evaluator {
 
+  Evaluator() {
+    // package-private for tests
+  }
+
   public static Result evaluate(Turn firstTurn, Turn secondTurn) {
     Result result = new Result();
     if (!firstTurn.getMove().equals(secondTurn.getMove())) {
-      Move winningMove = evaluateOpposingMoves(firstTurn.getMove(), secondTurn.getMove()).get();
-      if (winningMove.equals(firstTurn.getMove())) {
-        result.setWinner(firstTurn.getPlayer());
-      } else if (winningMove.equals(secondTurn.getMove())) {
-        result.setWinner(secondTurn.getPlayer());
+      Optional<Move> move = evaluateOpposingMoves(firstTurn.getMove(), secondTurn.getMove());
+      if (move.isPresent()) {
+        Move winningMove = move.get();
+        if (winningMove.equals(firstTurn.getMove())) {
+          result.setWinner(firstTurn.getPlayer());
+        } else if (winningMove.equals(secondTurn.getMove())) {
+          result.setWinner(secondTurn.getPlayer());
+        }
       }
     } else {
       result.setTie(true);

@@ -40,9 +40,9 @@ public class GameplayService {
     currentSession.changeStateTo(GameSession.State.PLAYING);
     try {
       Turn turn = new Turn(player, Enum.valueOf(Move.class, playRequest.getMove()));
-      if (currentSession.rounds().size() == 0) {
+      if (currentSession.rounds().isEmpty()) {
         createNewRound(turn, currentSession);
-      } else if (currentSession.rounds().size() > 0) {
+      } else if (!currentSession.rounds().isEmpty()) {
         Round latestRound = currentSession.latestRound();
         if (OVER.equals(latestRound.getState())) {
           createNewRound(turn, currentSession);
