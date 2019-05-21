@@ -20,14 +20,9 @@ import org.springframework.stereotype.Service;
 @Service
 public class GameplayService {
 
-  @Autowired
   private PlayerService playerService;
 
-  @Autowired
   private GameSessionService gameSessionService;
-
-  GameplayService() {
-  }
 
   public GameplayService(GameSessionService gameSessionService, PlayerService playerService) {
     this.gameSessionService = gameSessionService;
