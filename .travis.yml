@@ -4,6 +4,9 @@ install: true
 jdk:
   - openjdk11
 
+services:
+  - docker
+
 addons:
   sonarcloud:
     organization: "gavarava-github"
@@ -13,5 +16,13 @@ git:
   depth: false
 
 script:
-  - ./gradlew --no-build-cache
+  - ./gradlew
   - sonar-scanner
+  - docker build -t rockpaperscissors:0.0.1  .
+
+deploy:
+  provider: script
+  script: bash docker_push
+  on:
+    branch: master
+
