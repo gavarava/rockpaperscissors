@@ -8,7 +8,6 @@ import com.rps.domain.PlayersInMemoryRepository;
 import com.rps.domain.actors.Player;
 import com.rps.infrastructure.repository.exceptions.AlreadyExistsException;
 import com.rps.infrastructure.repository.exceptions.NotFoundException;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 @Service

@@ -6,6 +6,7 @@ import com.rps.infrastructure.repository.exceptions.AlreadyExistsException;
 import com.rps.infrastructure.repository.exceptions.NotFoundException;
 import java.util.HashSet;
 import java.util.Set;
+import org.springframework.context.annotation.Profile;
 
 public class PlayersInMemoryRepository implements CrudRepository<Player, Long> {
 
