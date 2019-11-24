@@ -1,0 +1,23 @@
+management:
+  port: 9000
+  endpoints:
+    web:
+      exposure:
+        include: "*"
+        #exclude: env
+
+logging:
+  level:
+    root: ERROR
+    org.springframework.web: ERROR
+    com.howtodoinjava: DEBUG
+    org.hibernate: ERROR
+
+server:
+  port: 8000
+---
+spring:
+  profiles: internal-db
+---
+spring:
+  profiles: external-db

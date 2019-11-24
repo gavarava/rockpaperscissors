@@ -19,7 +19,7 @@ import org.json.JSONObject;
 
 public class StepDefinitions {
 
-  private static final String APP_URL = "http://localhost:8080";
+  private static final String APP_URL = "http://localhost:8000";
   private JSONObject resultOfAcceptInvite;
   private String inviteCode;
   private String finalResult;
@@ -28,6 +28,7 @@ public class StepDefinitions {
   public void setupScenario() {
     // Start the RPS Application before running the scenario - this means that this test is a System Test ?
     // Every run of the test is starting a new instance of the Application
+    // TODO convert System Test to use Docker
     String[] args = {""};
     RPSApplication.main(args);
   }
