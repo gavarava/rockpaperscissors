@@ -63,7 +63,8 @@ jar {
 
 dependencies {
     compile(
-            'org.springframework.boot:spring-boot-starter-web',
+            'org.springframework.boot:spring-boot-starter-web:2.1.9.RELEASE',
+            'org.springframework.data:spring-data-jpa:2.2.0.RELEASE',
             'org.springframework.boot:spring-boot-starter-actuator'
     )
     testCompile(

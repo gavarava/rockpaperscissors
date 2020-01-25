@@ -17,7 +17,7 @@ server:
   port: 8000
 ---
 spring:
-  profiles: internal-db
+  profiles: inmemory-db
 ---
 spring:
-  profiles: external-db
+  profiles: live-db
