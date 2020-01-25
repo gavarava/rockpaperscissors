@@ -6,6 +6,7 @@ import static org.hamcrest.Matchers.not;
 import static org.hamcrest.Matchers.nullValue;
 import static org.junit.Assert.fail;
 
+import com.rps.application.players.DummyPlayerService;
 import com.rps.application.players.PlayerService;
 import com.rps.domain.PlayersInMemoryRepository;
 import com.rps.domain.actors.Player;
@@ -19,7 +20,7 @@ public class PlayerServiceTest {
   @Before
   public void beforeTest() {
     PlayersInMemoryRepository playersInMemoryRepository = new PlayersInMemoryRepository();
-    playerService = new PlayerService(playersInMemoryRepository);
+    playerService = new DummyPlayerService(playersInMemoryRepository);
   }
 
   @Test

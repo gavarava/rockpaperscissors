@@ -18,7 +18,7 @@ git:
 script:
   - ./gradlew
   - sonar-scanner
-  - docker build -t $DOCKER_USERNAME/rockpaperscissors:0.0.1 .
+  - docker build -t $DOCKER_USERNAME/rockpaperscissors:0.0.2 .
 
 deploy:
   provider: script

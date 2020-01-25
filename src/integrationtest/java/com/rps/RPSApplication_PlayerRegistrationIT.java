@@ -23,8 +23,8 @@ import org.springframework.test.web.servlet.MvcResult;
 /**
  * Integration testing the actual API Check the guide here: https://spring.io/guides/gs/testing-web/
  */
-@RunWith(SpringJUnit4ClassRunner.class)
 @SpringBootTest
+@RunWith(SpringJUnit4ClassRunner.class)
 public class RPSApplication_PlayerRegistrationIT extends IntegrationTestsBase {
 
 
