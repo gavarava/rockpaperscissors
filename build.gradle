@@ -59,12 +59,12 @@ jar {
 }
 
 dependencies {
-    compile(
-            'org.springframework.boot:spring-boot-starter-web:2.1.9.RELEASE',
+    implementation(
+            'org.springframework.boot:spring-boot-starter-web:2.2.0.RELEASE',
             'org.springframework.data:spring-data-jpa:2.2.0.RELEASE',
             'org.springframework.boot:spring-boot-starter-actuator'
     )
-    testCompile(
+    testImplementation(
             'junit:junit:4.12',
             'org.springframework.boot:spring-boot-starter-test',
             'org.mockito:mockito-core:2.23.4',
@@ -73,4 +73,9 @@ dependencies {
             'io.cucumber:cucumber-junit:4.2.0',
             'io.cucumber:cucumber-java8:4.2.0'
     )
+}
+
+wrapper {
+    gradleVersion = '6.1'
+    distributionType = Wrapper.DistributionType.ALL
 }
