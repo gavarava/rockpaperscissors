@@ -7,7 +7,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-import com.rps.domain.PlayersInMemoryRepository;
+import com.rps.infrastructure.repository.PlayersInMemoryRepository;
 import org.hamcrest.Matchers;
 import org.junit.Before;
 import org.junit.Test;

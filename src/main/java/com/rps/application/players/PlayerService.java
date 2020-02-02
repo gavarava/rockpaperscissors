@@ -5,12 +5,12 @@ import com.rps.domain.actors.Player;
 
 public interface PlayerService {
 
-    public void createPlayer(String name) throws RPSException;
+    void createPlayer(String name) throws RPSException;
 
-    public Player getPlayer(String name) throws RPSException;
+    Player getPlayer(String name) throws RPSException;
 
-    public Player changePlayerState(String existingPlayerName, Player.State newState)
+    Player changePlayerState(String existingPlayerName, Player.State newState)
         throws RPSException;
 
-    public void deletePlayer(String name) throws RPSException;
+    void deletePlayer(String name) throws RPSException;
 }

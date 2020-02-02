@@ -1,4 +1,4 @@
-package com.rps.domain;
+package com.rps.infrastructure.repository;
 
 import com.rps.domain.actors.Player;
 import com.rps.infrastructure.repository.CrudRepository;

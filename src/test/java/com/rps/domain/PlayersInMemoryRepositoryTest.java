@@ -8,6 +8,7 @@ import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
 
 import com.rps.domain.actors.Player;
+import com.rps.infrastructure.repository.PlayersInMemoryRepository;
 import com.rps.infrastructure.repository.exceptions.AlreadyExistsException;
 import com.rps.infrastructure.repository.exceptions.NotFoundException;
 import java.util.Set;
