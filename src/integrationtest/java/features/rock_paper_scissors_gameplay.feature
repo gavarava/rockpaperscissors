@@ -1,9 +1,9 @@
-Feature: Play Rock Paper Scissors
+Feature: Players can register and invite each other to play the game of Rock-Paper-Scissors
 
-  Scenario: Two players in a session can play with each other
-    Given two registered players 'PlayerOne' & 'PlayerTwo'
-    And 'PlayerTwo' accepts the invite from 'PlayerOne'
-    And 'PlayerOne' & 'PlayerTwo' are a part of the same session
-    And 'PlayerOne' & 'PlayerTwo' are ready
-    When 'PlayerOne' plays 'ROCK' & 'PlayerTwo' plays 'PAPER'
-    Then 'PlayerTwo' wins the game
+  Background: A running instance of the Rock-Paper-Scissors service
+    Given 'PlayerOne' & 'PlayerTwo' are registered
+
+  Scenario: Two players in the same session can play against each other
+    Given that 'PlayerOne' and 'PlayerTwo' are in the same session
+    When the players make a move
+    Then both players know the result of the game
