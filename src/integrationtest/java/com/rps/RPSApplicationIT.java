@@ -25,7 +25,7 @@ import org.springframework.web.context.WebApplicationContext;
  */
 @RunWith(SpringJUnit4ClassRunner.class)
 @SpringBootTest
-@ActiveProfiles("inmemory-db")
+@ActiveProfiles("development")
 public class RPSApplicationIT {
 
   @Autowired

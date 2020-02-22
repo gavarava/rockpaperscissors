@@ -31,7 +31,7 @@ public class StepDefinitions {
         // Start the RPS Application before running the scenario - this means that this test is a System Test ?
         // Every run of the test is starting a new instance of the Application
         // TODO convert System Test to use Docker
-        System.setProperty("spring.profiles.active", "inmemory-db");
+        System.setProperty("spring.profiles.active", "development");
         String[] args = {""};
         RPSApplication.main(args);
     }

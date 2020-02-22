@@ -24,6 +24,7 @@ public class GameplayService {
 
   private GameSessionService gameSessionService;
 
+  @Autowired
   public GameplayService(GameSessionService gameSessionService, PlayerService playerService) {
     this.gameSessionService = gameSessionService;
     this.playerService = playerService;

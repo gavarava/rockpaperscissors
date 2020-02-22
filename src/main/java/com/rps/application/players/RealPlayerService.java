@@ -6,7 +6,7 @@ import com.rps.domain.actors.Player.State;
 import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Service;
 
-@Profile("live-db")
+@Profile("staging")
 @Service
 public class RealPlayerService implements PlayerService {
 

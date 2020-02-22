@@ -4,20 +4,23 @@ management:
     web:
       exposure:
         include: "*"
-        #exclude: env
-
-logging:
-  level:
-    root: ERROR
-    org.springframework.web: ERROR
-    com.howtodoinjava: DEBUG
-    org.hibernate: ERROR
 
 server:
   port: 8000
 ---
 spring:
-  profiles: inmemory-db
+  profiles: development
+
+logging:
+  level:
+    root: INFO
+    org.springframework.web: INFO
+
 ---
 spring:
-  profiles: live-db
+  profiles: staging
+
+logging:
+  level:
+    root: ERROR
+    org.springframework.web: ERROR

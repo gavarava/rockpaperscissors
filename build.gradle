@@ -8,7 +8,7 @@ buildscript {
 }
 
 plugins {
-    id "net.researchgate.release" version "2.8.0"
+    id "java"
 }
 
 apply plugin: 'java'
@@ -18,8 +18,8 @@ apply plugin: 'org.springframework.boot'
 apply plugin: 'io.spring.dependency-management'
 
 java {
-    sourceCompatibility(JavaVersion.VERSION_1_8)
-    targetCompatibility(JavaVersion.VERSION_1_8)
+    sourceCompatibility(JavaVersion.VERSION_11)
+    targetCompatibility(JavaVersion.VERSION_11)
 }
 
 repositories {
@@ -46,11 +46,6 @@ test {
 jacoco {
     toolVersion = '0.8.2'
     reportsDir = file("${buildDir}/reports/jacoco")
-}
-
-jar {
-    baseName = 'rps-spring-boot'
-    version = '0.1.0'
 }
 
 dependencies {

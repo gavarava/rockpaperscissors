@@ -1,7 +1,6 @@
 package com.rps.infrastructure.repository;
 
 import com.rps.domain.actors.Player;
-import com.rps.infrastructure.repository.CrudRepository;
 import com.rps.infrastructure.repository.exceptions.AlreadyExistsException;
 import com.rps.infrastructure.repository.exceptions.NotFoundException;
 import java.util.HashSet;

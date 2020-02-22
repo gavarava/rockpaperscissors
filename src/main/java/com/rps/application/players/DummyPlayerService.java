@@ -4,19 +4,21 @@ import static com.rps.domain.actors.Player.State.PLAYING;
 import static com.rps.domain.actors.Player.State.WAITING;
 
 import com.rps.application.RPSException;
-import com.rps.domain.PlayersInMemoryRepository;
 import com.rps.domain.actors.Player;
+import com.rps.infrastructure.repository.PlayersInMemoryRepository;
 import com.rps.infrastructure.repository.exceptions.AlreadyExistsException;
 import com.rps.infrastructure.repository.exceptions.NotFoundException;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Service;
 
-@Profile("inmemory-db")
+@Profile("development")
 @Service
 public class DummyPlayerService implements PlayerService {
 
     private PlayersInMemoryRepository playersInMemoryRepository;
 
+    @Autowired
     public DummyPlayerService(PlayersInMemoryRepository playersInMemoryRepository) {
         this.playersInMemoryRepository = playersInMemoryRepository;
     }
