@@ -44,7 +44,7 @@ public class RPSApplicationIT {
   @Test
   public void checkWhetherWebApplicationContextAndTheRepositoryLoadsSuccessfully() {
     assertNotNull(playersInMemoryRepository);
-    assertThat(playersInMemoryRepository.count(), Matchers.greaterThanOrEqualTo(0));
+    assertThat(playersInMemoryRepository.count(), Matchers.greaterThanOrEqualTo(0L));
   }
 
   @Test

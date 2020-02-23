@@ -8,12 +8,12 @@ import static org.junit.Assert.fail;
 
 import com.rps.application.players.DummyPlayerService;
 import com.rps.application.players.PlayerService;
-import com.rps.infrastructure.repository.PlayersInMemoryRepository;
 import com.rps.domain.actors.Player;
+import com.rps.infrastructure.repository.PlayersInMemoryRepository;
 import org.junit.Before;
 import org.junit.Test;
 
-public class PlayerServiceTest {
+public class DummyPlayerServiceTest {
 
   private PlayerService playerService;
 
